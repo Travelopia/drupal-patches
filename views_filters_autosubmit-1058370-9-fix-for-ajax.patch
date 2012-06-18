@@ -1,0 +1,24 @@
+diff --git views_filters_autosubmit.js views_filters_autosubmit.js
+index 91a26c1..6b735f0 100644
+--- views_filters_autosubmit.js
++++ views_filters_autosubmit.js
+@@ -16,15 +16,16 @@ Drupal.behaviors.vfas = {
+         exceptions = '';
+       }
+       $(self).addClass('vfas-processed');
++      var $button = $(self).find('input[type=submit]').first();
+       $('.views-submit-button', self).hide();
+       $('div.views-exposed-widget input:not(:checkbox,:radio)'+exceptions, self).change(function() {
+-        $(self).submit();
++        $button.click();
+       });
+       $('div.views-exposed-widget input:checkbox'+exceptions+', div.views-exposed-widget input:radio'+exceptions, self).click(function() {
+-        $(self).submit();
++        $button.click();
+       });
+       $('div.views-exposed-widget select'+exceptions, self).change(function() {
+-        $(self).submit();
++        $button.click();
+       });
+ 
+      });

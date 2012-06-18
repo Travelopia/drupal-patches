@@ -1,0 +1,14 @@
+diff --git a/views.module b/views.module
+index 4bc8871..86eec14 100644
+--- a/views.module
++++ b/views.module
+@@ -1559,6 +1559,9 @@ function views_save_view(&$view) {
+  * Export CRUD callback to delete a view.
+  */
+ function views_delete_view(&$view) {
++  if (!isset($view)) {
++    return TRUE;
++  }
+   return $view->delete(TRUE);
+ }
+ 

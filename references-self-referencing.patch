@@ -1,0 +1,14 @@
+diff --git node_reference/node_reference.module node_reference/node_reference.module
+index 11db51b..8bacf55 100644
+--- node_reference/node_reference.module
++++ node_reference/node_reference.module
+@@ -343,7 +343,8 @@ function node_reference_field_formatter_view($entity_type, $entity, $field, $ins
+       $nodes_display = array();
+       foreach ($items as $delta => $item) {
+         if ($item['access'] && !isset($recursion_queue[$item['nid']])) {
+-          $nodes_display[$item['nid']] = $item['node'];
++          // We need to add the clone here, if we can allow self-referencing.
++          $nodes_display[$item['nid']] = clone($item['node']);
+         }
+       }
+ 

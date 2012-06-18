@@ -1,0 +1,78 @@
+diff --git a/fb_url_rewrite.inc b/fb_url_rewrite.inc
+index 2011ca2..5ee51a1 100644
+--- a/fb_url_rewrite.inc
++++ b/fb_url_rewrite.inc
+@@ -89,29 +89,19 @@ function fb_url_outbound_alter(&$path, &$options, $original_path) {
+     fb_canvas_url_outbound_alter($path, $options, $original_path);
+   }
+ 
+-  $pre = '';
+-
+   // Prefix each known value to the URL
+   foreach (_fb_settings_url_rewrite_prefixes() as $prefix) {
+     if (!isset($options[$prefix]) || $options[$prefix] !== FALSE) {
+-      if ($value = fb_settings($prefix))
+-        $pre .= $prefix . '/' . $value . '/';
+-    }
+-  }
+-
+-  if ($pre) {
+-    if ($path == '<front>') {
+-      // Do we really have to do this here?
+-      $path = '';
++      if ($value = fb_settings($prefix)) {
++        // Append on our settings to the path prefix.
++        if (isset($options['prefix'])) {
++          $options['prefix'] = $prefix . '/' . $value . '/' . $options['prefix'];
++        }
++        else {
++          $options['prefix'] = $prefix . '/' . $value;
++        }
++      }
+     }
+-
+-    $path =
+-      $pre .
+-      (!empty($options['prefix']) ? $options['prefix'] : '') .
+-      $path;
+-
+-    // We have manually set the prefix, so remove the options prefix.
+-    $options['prefix'] = '';
+   }
+ 
+   // Since we called fb_canvas_url_alter already, supress it from acting again.
+@@ -125,8 +115,6 @@ function fb_url_outbound_alter(&$path, &$options, $original_path) {
+  *
+  */
+ function fb_url_inbound_alter(&$path, $original_path, $path_language) {
+-  global $language;
+-
+   // See if this is a request for us.
+   if (strpos($path, FB_SETTINGS_CB . '/') === 0) {
+     // Too soon for arg() function.
+@@ -134,23 +122,12 @@ function fb_url_inbound_alter(&$path, $original_path, $path_language) {
+     while (count($args) && in_array($args[0], _fb_settings_url_rewrite_prefixes())) {
+       $key = array_shift($args);
+       $value = array_shift($args);
+-      if (fb_settings($key) === NULL) // defer to previously set values
++      if (fb_settings($key) === NULL) {
+         fb_settings($key, $value); // Store for use later.
++      }
+     }
+-
+     // Remove our prefixes
+     $path = implode('/', $args);
+-
+-    // Because Drupal calls hook_url_inbound_alter() later than it should, we have to repeat this work, which path.inc has already done.
+-    if (!$path) {
+-      $path = variable_get('site_frontpage', 'node');
+-    }
+-    $alias = drupal_lookup_path('source', $path, $path_language);
+-    if ($alias) {
+-      $path = $alias;
+-    }
+   }
+-
+-  $result = $path;
+ }
+ 

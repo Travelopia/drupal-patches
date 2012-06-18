@@ -1,0 +1,16 @@
+diff --git a/field_collection.module b/field_collection.module
+index a5298a5..2527fd7 100644
+--- a/field_collection.module
++++ b/field_collection.module
+@@ -143,6 +143,11 @@ class FieldCollectionItemEntity extends Entity {
+    * Specifies the default label, which is picked up by label() by default.
+    */
+   public function defaultLabel() {
++
++    // Hack - make this return nothing for now - can't do an entity field query
++    // everytime we render a field collection item!
++    return t('Unconnected field-collection item');
++
+     // @todo make configurable.
+     if ($instance = $this->instanceInfo()) {
+       $field = $this->fieldInfo();

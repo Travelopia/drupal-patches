@@ -1,0 +1,17 @@
+diff --git plugins/FeedsEntityProcessor.inc plugins/FeedsEntityProcessor.inc
+index 792cc89..66fce69 100644
+--- plugins/FeedsEntityProcessor.inc
++++ plugins/FeedsEntityProcessor.inc
+@@ -98,8 +98,10 @@ class FeedsEntityProcessor extends FeedsProcessor {
+         $form['values'][$name]['#description'] .= ' ' . t('Expected data type: %type.', array('%type' => $wrapper->$name->type()));
+         if ($wrapper->$name instanceof EntityDrupalWrapper) {
+           $info = $wrapper->$name->entityInfo();
+-          $id_info = $wrapper->$name->get($info['entity keys']['id'])->info();
+-          $form['values'][$name]['#description'] .= ' ' . t('Just enter the identifier of the entity, i.e. %id', array('%id' => $id_info['label']));
++          if (isset($info)) {
++            $id_info = $wrapper->$name->get($info['entity keys']['id'])->info();
++            $form['values'][$name]['#description'] .= ' ' . t('Just enter the identifier of the entity, i.e. %id', array('%id' => $id_info['label']));
++          }
+         }
+       }
+     }

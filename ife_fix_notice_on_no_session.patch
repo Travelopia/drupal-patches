@@ -1,0 +1,15 @@
+diff --git ife.module ife.module
+index c1b0a82..54bc512 100644
+--- ife.module
++++ ife.module
+@@ -308,7 +308,9 @@ function ife_element_get_error($element, $debug = FALSE) {
+  * Clear the session after the form has been build.
+  */
+ function ife_session_cleanup($form, $form_state) {
+-  unset($_SESSION['ife']);
++  if (isset($_SESSION)) {
++    unset($_SESSION['ife']);
++  }
+   return $form;
+ }
+ 

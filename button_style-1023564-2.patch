@@ -1,0 +1,77 @@
+diff --git button_style.module button_style.module
+index aed04a7..c8bbc8b 100644
+--- button_style.module
++++ button_style.module
+@@ -9,24 +9,33 @@
+  * Implementation of hook_form_alter().
+  */
+ function button_style_form_alter(&$form, &$form_state, $form_id) {
+-  $path = drupal_get_path('module', 'button_style');
+-  $form['#attached']['css'][] = $path . '/button_style.css';
+-  // $form['#attached']['js'][] = $path . '/button_style.js';
++  if (theme_get_setting('button_style_enabled')) {
++    $path = drupal_get_path('module', 'button_style');
++    $form['#attached']['css'][] = $path . '/button_style.css';
++    // $form['#attached']['js'][] = $path . '/button_style.js';
+ 
+-  // Add container around form buttons.
+-  $form['#after_build'][] = 'button_style_form_after_build';
++    // Add container around form buttons.
++    $form['#after_build'][] = 'button_style_form_after_build';
+ 
+-  // Prepare confirmation forms.
+-  if (isset($form['#theme']) && $form['#theme'] == 'confirm_form') {
+-    // Turn description into form item.
+-    $form['description']['#type'] = 'item';
+-    $form['description']['#description'] = $form['description']['#markup'];
+-    unset($form['description']['#markup']);
+-    // Add Sliding Doors markup to cancel action in confirmation forms.
+-    $cancel = $form['actions']['cancel']['#markup'];
+-    $cancel = substr($cancel, 0, 2) . ' class="button"' . substr($cancel, 2);
+-    $cancel = preg_replace('@(<a [^>]+>)(.+)(</a>)@', '$1<span>$2</span>$3', $cancel);
+-    $form['actions']['cancel']['#markup'] = $cancel;
++    // Prepare confirmation forms.
++    if (isset($form['#theme']) && $form['#theme'] == 'confirm_form') {
++      // Turn description into form item.
++      $form['description']['#type'] = 'item';
++      $form['description']['#description'] = $form['description']['#markup'];
++      unset($form['description']['#markup']);
++      // Add Sliding Doors markup to cancel action in confirmation forms.
++      if ($form['actions']['cancel']['#type'] == 'link') {
++        $form['actions']['cancel']['#title'] = '<span>' . check_plain($form['actions']['cancel']['#title']) . '</span>';
++        $form['actions']['cancel']['#options']['html'] = TRUE;
++        $form['actions']['cancel']['#options']['attributes']['class'][] = 'button';
++      }
++      else {
++        $cancel = $form['actions']['cancel']['#markup'];
++        $cancel = substr($cancel, 0, 2) . ' class="button"' . substr($cancel, 2);
++        $cancel = preg_replace('@(<a [^>]+>)(.+)(</a>)@', '$1<span>$2</span>$3', $cancel);
++        $form['actions']['cancel']['#markup'] = $cancel;
++      }
++    }
+   }
+ }
+ 
+@@ -103,3 +112,22 @@ function button_style_theme_button($element) {
+   return '<span class="form-button-wrapper">' . trim(theme_button($element)) . '</span>';
+ }
+ 
++/**
++ * Implements hook_form_FORM_ID_alter().
++ */
++function button_style_form_system_theme_settings_alter(&$form, $form_state) {
++  if ($key = array_shift($form_state['build_info']['args'])) {
++    $form['button_style'] = array(
++      '#type' => 'fieldset',
++      '#title' => t('Button style'),
++    );
++    $form['button_style']['button_style_enabled'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Enabled'),
++      '#default_value' => theme_get_setting('button_style_enabled', $key),
++      '#description' => t('If checked, this theme will use the !link module to create fancy submit buttons.', array(
++        '!link' => l(t('Button Style'), 'http://drupal.org/project/button_style'),
++      )),
++    );
++  }
++}

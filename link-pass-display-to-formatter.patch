@@ -1,0 +1,13 @@
+diff --git link.module link.module
+index 7ac47c4..dadaf66 100644
+--- link.module
++++ link.module
+@@ -633,7 +633,7 @@ function link_field_formatter_view($entity_type, $entity, $field, $instance, $la
+   $elements = array();
+   foreach ($items as $delta => $item) {
+     $elements[$delta] = array(
+-      '#markup' => theme('link_formatter_'. $display['type'], array('element' => $item, 'field' => $instance)),
++      '#markup' => theme('link_formatter_'. $display['type'], array('element' => $item, 'field' => $instance, 'display' => $display)),
+     );
+   }
+   return $elements;

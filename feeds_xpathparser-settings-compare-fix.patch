@@ -1,0 +1,31 @@
+diff --git FeedsXPathParser.inc FeedsXPathParser.inc
+index cab69bb..74db18a 100644
+--- FeedsXPathParser.inc
++++ FeedsXPathParser.inc
+@@ -379,8 +379,8 @@ class FeedsXPathParserBase extends FeedsParser {
+    */
+   public function sourceFormValidate(&$values) {
+     $values = $values['xpath'];
+-    asort($values);
+-    asort($this->config);
++    $this->sortNestedArrayAssoc($values);
++    $this->sortNestedArrayAssoc($this->config);
+     if ($values === $this->config) {
+       $values = array();
+       return;
+@@ -388,6 +388,15 @@ class FeedsXPathParserBase extends FeedsParser {
+     $this->configFormValidate($values);
+   }
+ 
++  private function sortNestedArrayAssoc(&$a) {
++    ksort($a);
++    foreach ($a as $key => &$value) {
++      if (is_array($value)) {
++        $this->sortNestedArrayAssoc($value);
++      }
++    }
++  }
++
+   /**
+    * Override parent::sourceFormValidate().
+    */

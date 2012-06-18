@@ -1,0 +1,18 @@
+diff --git boxes.module boxes.module
+index b2bd65a..e89166f 100644
+--- boxes.module
++++ boxes.module
+@@ -321,8 +321,11 @@ function boxes_box_load($delta = NULL) {
+   $boxes = array();
+   foreach (ctools_export_load_object('box') as $box) {
+     $box = boxes_box::load($box->delta);
+-    drupal_alter('boxes_box_load', $box, $delta);
+-    $boxes[$box->delta] = $box;
++    // Disregard boxes in the database whose handler has since been removed
++    if (isset($box->delta)) {
++      drupal_alter('boxes_box_load', $box, $delta);
++      $boxes[$box->delta] = $box;
++    }
+   }
+   return $boxes;
+ }

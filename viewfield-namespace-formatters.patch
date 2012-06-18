@@ -1,0 +1,31 @@
+diff --git viewfield.module viewfield.module
+index a43f81a..a9efcb2 100755
+--- viewfield.module
++++ viewfield.module
+@@ -26,7 +26,7 @@ function viewfield_field_info() {
+       'description' => t('Displays a selected view in a node.'),
+       'instance_settings' => array('allowed_views' => array()),
+       'default_widget' => 'viewfield_select',
+-      'default_formatter' => 'default',
++      'default_formatter' => 'viewfield_default',
+     ),
+   );
+ }
+@@ -69,7 +69,7 @@ function viewfield_field_is_empty($item, $field) {
+  */
+ function viewfield_field_formatter_info() {
+   return array(
+-    'default' => array(
++    'viewfield_default' => array(
+       'label' => t('Default'),
+       'field types' => array('viewfield'),
+     ),
+@@ -82,7 +82,7 @@ function viewfield_field_formatter_info() {
+ function viewfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+   $elements = array();
+   switch ($display['type']) {
+-    case 'default':
++    case 'viewfield_default':
+       foreach ($items as $delta => $item) {
+         $elements[$delta] = array(
+           '#theme' => 'viewfield_formatter_default',

@@ -1,0 +1,26 @@
+diff --git cluetip/jquery.cluetip.js cluetip/jquery.cluetip.js
+index d1e3989..1d5d1e7 100644
+--- cluetip/jquery.cluetip.js
++++ cluetip/jquery.cluetip.js
+@@ -256,8 +256,19 @@
+ * load an element from the same page
+ ***************************************/
+       } else if (opts.local) {
+-        
+-        var $localContent = $(tipAttribute + (/#\S+$/.test(tipAttribute) ? '' : ':eq(' + index + ')')).clone(true).show();
++        // Special handling for MSIE.
++        if ($.browser.msie) {
++          var $localSource = $(tipAttribute + (/#\S+$/.test(tipAttribute) ? '' : ':eq(' + index + ')'));
++          var $localContent = $(innerShiv($("<div>").append($localSource.clone()).html(), false)).show();
++          // Horrible specific hack that looks for jQuery data that we have attached
++          // in one particular location and copies it over. This is needed for our
++          // colorbox 'Save your shortlist' links to work.
++          $localContent.find('a.save-to-shortlist').first().data('colorbox', $localSource.find('a.save-to-shortlist').first().data('colorbox'));
++        }
++        else {
++          var $localContent = $(tipAttribute + (/#\S+$/.test(tipAttribute) ? '' : ':eq(' + index + ')')).clone(true).show();
++        }
++
+         $cluetipInner.html($localContent);
+         cluetipShow(pY);
+       }

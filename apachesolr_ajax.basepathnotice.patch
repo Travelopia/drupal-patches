@@ -1,0 +1,25 @@
+From c4cd47046627040e08f0776e82e8345a67a8858f Mon Sep 17 00:00:00 2001
+From: James Silver <jamsilver@gmail.com>
+Date: Wed, 4 Jan 2012 14:45:12 +0000
+Subject: [PATCH] Fix PHP Notice with no basepath
+
+---
+ apachesolr_ajax.module |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/apachesolr_ajax.module b/apachesolr_ajax.module
+index b399834..a3e374e 100644
+--- a/apachesolr_ajax.module
++++ b/apachesolr_ajax.module
+@@ -49,7 +49,7 @@ function apachesolr_ajax_proxy() {
+ 
+   // Remove the base_path
+   $base_path = ltrim(base_path(), '/');
+-  if (strpos($path, $base_path) === 0) {
++  if (!empty($base_path) && strpos($path, $base_path) === 0) {
+     $path = substr($path, strlen($base_path));
+   }
+ 
+-- 
+1.7.1
+
