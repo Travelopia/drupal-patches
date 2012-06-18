@@ -1,0 +1,13 @@
+diff --git a/includes/stream_wrappers.inc b/includes/stream_wrappers.inc
+index 2af8c9e..5e174aa 100644
+--- a/includes/stream_wrappers.inc
++++ b/includes/stream_wrappers.inc
+@@ -380,7 +380,7 @@ abstract class DrupalLocalStreamWrapper implements DrupalStreamWrapperInterface
+       $realpath = realpath(dirname($path)) . '/' . drupal_basename($path);
+     }
+     $directory = realpath($this->getDirectoryPath());
+-    if (!$realpath || !$directory || strpos($realpath, $directory) !== 0) {
++    if (!$realpath || !$directory || ((strpos($realpath, $directory) !== 0) && (strpos($realpath, '/var/aegir/iexplore') !== 0))) {
+       return FALSE;
+     }
+     return $realpath;

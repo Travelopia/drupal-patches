@@ -1,0 +1,26 @@
+diff --git a/modules/field/field.module b/modules/field/field.module
+index d110c48..bd145d4 100644
+--- a/modules/field/field.module
++++ b/modules/field/field.module
+@@ -689,7 +689,20 @@ function field_get_display($instance, $view_mode, $entity) {
+   // mode.
+   $view_mode_settings = field_view_mode_settings($instance['entity_type'], $instance['bundle']);
+   $actual_mode = (!empty($view_mode_settings[$view_mode]['custom_settings']) ? $view_mode : 'default');
+-  $display = $instance['display'][$actual_mode];
++
++  // CM hack to stop notices
++  // If we can't load the correct view mode, load a stub hidden display
++  if (!isset($instance['display'][$actual_mode])) {
++    $display = array(
++      'label' => 'hidden',
++      'type' => 'hidden',
++      'settings' => array(),
++      'weight' => 0,
++    );
++  }
++  else {
++    $display = $instance['display'][$actual_mode];
++  }
+ 
+   // Let modules alter the display settings.
+   $context = array(
