@@ -1,0 +1,37 @@
+diff --git a/apachesolr.admin.inc b/apachesolr.admin.inc
+index 5dc77bb..9defa1c 100644
+--- a/apachesolr.admin.inc
++++ b/apachesolr.admin.inc
+@@ -849,6 +849,10 @@ function apachesolr_index_action_form_remaining_confirm_submit($form, &$form_sta
+     $env_id = apachesolr_default_environment();
+   }
+   $form_state['redirect'] = 'admin/config/search/apachesolr';
++  // Redirect to the URL provided by iexplore_departure_solr
++  if ($env_id && $env_id != apachesolr_default_environment()) {
++    $form_state['redirect'] .= '/'.$env_id;
++  }
+   apachesolr_index_batch_index_remaining($env_id);
+ }
+ 
+@@ -880,6 +884,10 @@ function apachesolr_index_action_form_reset_confirm_submit($form, &$form_state)
+   apachesolr_index_mark_for_reindex($env_id);
+   drupal_set_message(t('All the content on your site is queued for indexing. You can wait for it to be indexed during cron runs, or you can manually reindex it.'));
+   $form_state['redirect'] = 'admin/config/search/apachesolr';
++  // Redirect to the URL provided by iexplore_departure_solr
++  if ($env_id && $env_id != apachesolr_default_environment()) {
++    $form_state['redirect'] .= '/'.$env_id;
++  }
+ }
+ 
+ /**
+@@ -912,6 +920,10 @@ function apachesolr_index_action_form_delete_confirm_submit($form, &$form_state)
+   drupal_set_message(t('The index has been deleted.'));
+ 
+   $form_state['redirect'] = 'admin/config/search/apachesolr';
++  // Redirect to the URL provided by iexplore_departure_solr
++  if ($env_id && $env_id != apachesolr_default_environment()) {
++    $form_state['redirect'] .= '/'.$env_id;
++  }
+ }
+ 
+ /**
