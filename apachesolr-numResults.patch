@@ -1,0 +1,40 @@
+diff --git a/apachesolr.module b/apachesolr.module
+index 324f10c..484ed9e 100644
+--- a/apachesolr.module
++++ b/apachesolr.module
+@@ -1458,6 +1458,35 @@ function apachesolr_do_query(DrupalSolrQueryInterface $current_query) {
+   $keys = htmlspecialchars($keys, ENT_NOQUOTES, 'UTF-8');
+   $keys = str_replace("'", '&#039;', $keys);
+   $response = $query->search($keys);
++  
++  // Are results being returned to us in grouped format?
++  // If so, make it appear as if they aren't.
++  // Solr can do this itself using group.main=true, but won't return a count
++  // We do this here rather than in *_process_response so the grouping is totally 
++  // transparent to other code such as users of the static response cache
++  if (empty($response->response) && isset($response->grouped)) {
++    $group_truncate = $query->getParam('group.truncate');
++    $group_names = array_keys(get_object_vars($response->grouped));
++    if (count($group_names) > 1) {
++      watchdog(
++        'Apache Solr',
++        'Multiple group commands are not currently supported - using first group returned.',
++        WATCHDOG_WARNING
++      );
++    }
++    if ($group_truncate[0] == 'true') {
++      $response->response->numFound = $response->grouped->{$group_names[0]}->ngroups;
++    }
++    else {
++      $response->response->numFound = $response->grouped->{$group_names[0]}->matches;
++    }
++    $response->response->docs = array();
++    foreach ($response->grouped->{$group_names[0]}->groups as $group) {
++      $response->response->docs = array_merge($response->response->docs, $group->doclist->docs);
++    }
++    unset($response->grouped);
++  }
++  
+   // The response is cached so that it is accessible to the blocks and anything
+   // else that needs it beyond the initial search.
+   apachesolr_static_response_cache($searcher, $response);
