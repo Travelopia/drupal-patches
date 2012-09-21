@@ -1,0 +1,16 @@
+ fb.admin.inc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fb.admin.inc b/fb.admin.inc
+index 7c65659..2e5b8d1 100644
+--- a/fb.admin.inc
++++ b/fb.admin.inc
+@@ -464,7 +464,7 @@ function fb_admin_settings() {
+       '#title'  => t("Assigned Facebook's locale to @language", array('@language' => t($language->name))),
+       '#type'  => 'select',
+       '#options' => fb_admin_i18n_list(),
+-      '#default_value' => fb_admin_i18n_map($language->language),
++      '#default_value' => variable_get('fb_language_' . $language->language, fb_admin_i18n_map($language->language)),
+     );
+   }
+ 
