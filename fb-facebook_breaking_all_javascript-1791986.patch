@@ -1,0 +1,16 @@
+ fb.module | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fb.module b/fb.module
+index d6760de..e63514a 100644
+--- a/fb.module
++++ b/fb.module
+@@ -791,6 +791,8 @@ function fb_api_batch($fb, $queries, $params, $method = 'GET') {
+  * Can alter the $page['page_bottom'] hidden region here.
+  */
+ function fb_page_alter(&$page) {
++  return;
++
+   global $_fb, $_fb_app;
+ 
+   // This element recommended by facebook. http://developers.facebook.com/docs/reference/javascript/
