@@ -1,8 +1,11 @@
+ apachesolr.module | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
 diff --git a/apachesolr.module b/apachesolr.module
-index 324f10c..484ed9e 100644
+index 324f10c..6f2a763 100644
 --- a/apachesolr.module
 +++ b/apachesolr.module
-@@ -1458,6 +1458,35 @@ function apachesolr_do_query(DrupalSolrQueryInterface $current_query) {
+@@ -1458,6 +1458,38 @@ function apachesolr_do_query(DrupalSolrQueryInterface $current_query) {
    $keys = htmlspecialchars($keys, ENT_NOQUOTES, 'UTF-8');
    $keys = str_replace("'", '&#039;', $keys);
    $response = $query->search($keys);
@@ -30,6 +33,9 @@ index 324f10c..484ed9e 100644
 +    }
 +    $response->response->docs = array();
 +    foreach ($response->grouped->{$group_names[0]}->groups as $group) {
++      foreach ($group->doclist->docs as $key => $doc) {
++        $group->doclist->docs[$key]->groupValue = $group_names[0];
++      }
 +      $response->response->docs = array_merge($response->response->docs, $group->doclist->docs);
 +    }
 +    unset($response->grouped);
