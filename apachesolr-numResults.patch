@@ -25,7 +25,7 @@ index 324f10c..6f2a763 100644
 +        WATCHDOG_WARNING
 +      );
 +    }
-+    if ($group_truncate[0] == 'true') {
++    if (isset($response->grouped->{$group_names[0]}->ngroups)) {
 +      $response->response->numFound = $response->grouped->{$group_names[0]}->ngroups;
 +    }
 +    else {
