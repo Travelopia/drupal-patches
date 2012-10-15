@@ -1,0 +1,139 @@
+ facetapi.js                       | 86 +++++++++++++++++++++++++++++++++++++++
+ plugins/facetapi/widget_links.inc | 13 ++++++
+ 2 files changed, 99 insertions(+)
+
+diff --git a/facetapi.js b/facetapi.js
+index 1fed227..a291f65 100644
+--- a/facetapi.js
++++ b/facetapi.js
+@@ -72,6 +72,86 @@ Drupal.facetapi.Redirect.prototype.gotoHref = function() {
+ }
+ 
+ /**
++ * Constructor for the facetapi facet class.
++ */
++Drupal.facetapi.Facet = function(filter, link_id, ul_id) {
++  this.filter = filter;
++  this.link_id = link_id;
++  this.ul_id = ul_id;
++}
++
++Drupal.facetapi.Facet.prototype.toggleCheckbox = function() {
++  checkbox = jQuery('#'+this.link_id).prev('input');
++  if (checkbox.attr('checked')) {
++    checkbox.attr('checked', false);
++  }
++  else {
++    checkbox.attr('checked', 'checked');
++  }
++}
++
++/**
++ * Method to add/remove the filter to all the other items in the list
++ */
++Drupal.facetapi.Facet.prototype.toggleFilter = function() {
++  var current_filter = this.filter;
++  var tick_added;
++  
++  // Work out whether we are responding to an option being ticked or unticked
++  jQuery.each($('ul#'+this.ul_id+' li'), function(index, value) {
++    if (jQuery(value).children('a').attr('data-facet') == current_filter)
++    {
++      tick_added = jQuery(value).children('input').attr('checked');
++    }
++  });
++  
++  // Add (remove) the relevant option from all filters within the same facet
++  jQuery.each($('ul#'+this.ul_id+' li'), function(index, value) {
++    // Invert the add/remove behaviour if we're on the actual checkbox that has
++    // been changed, because the link should be ready for when it is NEXT clicked
++    // (we are already processing this click).
++    if (jQuery(value).children('a').attr('data-facet') == current_filter)
++    {
++      var add_filter = !tick_added;
++    }
++    else {
++      var add_filter = tick_added;
++    }
++
++    // Calculate the new destination URLs with this filter added (removed)
++    if (add_filter) {
++      var new_href = jQuery(this).children('a').attr('href') + '&f[]=' + encodeURIComponent(current_filter);
++    }
++    else {
++      var new_href = jQuery(this).children('a').attr('href');
++      new_href = new_href.replace(encodeURIComponent(current_filter).replace('*', '%2A'),'');
++    }
++
++
++    /* Replace the existing destinations, both href and javascript */
++
++    // First get variables for our link and checkbox, and remove our old handlers
++    var $link = jQuery(this).children('a').unbind('click');
++    var checkbox = jQuery(this).children('input').unbind('click');
++
++    // Replace the URL on the checkbox and link
++    redirect = new Drupal.facetapi.Redirect(new_href);
++    checkbox.click($.proxy(redirect, 'gotoHref'));
++    // Use a tiny timeout so that the browser starts navigating to the link
++    // before we change where we're going to navigate to
++    setTimeout(function() {$link.attr('href', new_href);}, 50);
++    
++
++    // We had to remove and re-bind the toggleFilter call, so it gets called
++    // AFTER the redirect in all cases
++    facet = new Drupal.facetapi.Facet($link.attr('data-facet'), $link.attr('id'), $link.parent().parent().attr('id'));
++    $link.click($.proxy(facet, 'toggleCheckbox'));
++    $link.click($.proxy(facet, 'toggleFilter'));
++    checkbox.click($.proxy(facet, 'toggleFilter'));
++  });
++}
++
++/**
+  * Replace an unclick link with a checked checkbox.
+  */
+ Drupal.facetapi.makeCheckbox = function() {
+@@ -93,6 +173,12 @@ Drupal.facetapi.makeCheckbox = function() {
+     var href = $link.attr('href');
+     redirect = new Drupal.facetapi.Redirect(href);
+     checkbox.click($.proxy(redirect, 'gotoHref'));
++
++    facet = new Drupal.facetapi.Facet($link.attr('data-facet'), $link.attr('id'), $link.parent().parent().attr('id'));
++    $link.click($.proxy(facet, 'toggleCheckbox'));
++    $link.click($.proxy(facet, 'toggleFilter'));
++    checkbox.click($.proxy(facet, 'toggleFilter'));
++    
+     if (active) {
+       // Add the checkbox, hide the link.
+       $link.before(checkbox).hide();
+diff --git a/plugins/facetapi/widget_links.inc b/plugins/facetapi/widget_links.inc
+index fa4862c..5ff0d3f 100644
+--- a/plugins/facetapi/widget_links.inc
++++ b/plugins/facetapi/widget_links.inc
+@@ -38,6 +38,9 @@ class FacetapiWidgetLinks extends FacetapiWidget {
+    */
+   public function execute() {
+     $element = &$this->build[$this->facet['field alias']];
++    foreach ($element as $index => $item) {
++      $element[$index]['#facetapi_facet_id'] = $this->facet['name'];
++    }
+ 
+     // Sets each item's theme hook, builds item list.
+     $this->setThemeHooks($element);
+@@ -114,6 +117,16 @@ class FacetapiWidgetLinks extends FacetapiWidget {
+         $variables['options']['attributes']['class'][] = 'facetapi-zero-results';
+       }
+ 
++      if (isset($item['#facetapi_facet_id'])) {
++        $variables['options']['attributes']['data-facet'] = t('@facet:@value', array(
++          '@facet' => $item['#facetapi_facet_id'],
++          '@value' => $value
++        ));
++      }
++
++      // Add an ID to identify this link.
++      $variables['options']['attributes']['id'] = drupal_html_id('facetapi-link');
++
+       // If the item has no children, it is a leaf.
+       if (empty($item['#item_children'])) {
+         $row['class'][] = 'leaf';
