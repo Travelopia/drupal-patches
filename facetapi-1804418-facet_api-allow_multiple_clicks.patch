@@ -1,12 +1,12 @@
- facetapi.js                       | 86 +++++++++++++++++++++++++++++++++++++++
+ facetapi.js                       | 96 +++++++++++++++++++++++++++++++++++++++
  plugins/facetapi/widget_links.inc | 13 ++++++
- 2 files changed, 99 insertions(+)
+ 2 files changed, 109 insertions(+)
 
 diff --git a/facetapi.js b/facetapi.js
-index 1fed227..a291f65 100644
+index 1fed227..59c06f8 100644
 --- a/facetapi.js
 +++ b/facetapi.js
-@@ -72,6 +72,86 @@ Drupal.facetapi.Redirect.prototype.gotoHref = function() {
+@@ -72,6 +72,96 @@ Drupal.facetapi.Redirect.prototype.gotoHref = function() {
  }
  
  /**
@@ -87,13 +87,23 @@ index 1fed227..a291f65 100644
 +    $link.click($.proxy(facet, 'toggleFilter'));
 +    checkbox.click($.proxy(facet, 'toggleFilter'));
 +  });
++
++  // Hide the other facets while we're processing this one
++  jQuery('ul.facetapi-facetapi-checkbox-links').css('visibility', 'hidden');
++  jQuery('#block-iexplore-departure-solr-price-range-filter').css('visibility', 'hidden');
++  jQuery('ul.facetapi-facetapi-checkbox-links').parent().addClass('ajax-loading');
++  jQuery('#iexplore-price-range-filter-wrapper').addClass('ajax-loading');
++
++  // But leave the one we're interacting with alone
++  $('ul#'+this.ul_id).css('visibility', 'visible');
++  $('ul#'+this.ul_id).parent().removeClass('ajax-loading');
 +}
 +
 +/**
   * Replace an unclick link with a checked checkbox.
   */
  Drupal.facetapi.makeCheckbox = function() {
-@@ -93,6 +173,12 @@ Drupal.facetapi.makeCheckbox = function() {
+@@ -93,6 +183,12 @@ Drupal.facetapi.makeCheckbox = function() {
      var href = $link.attr('href');
      redirect = new Drupal.facetapi.Redirect(href);
      checkbox.click($.proxy(redirect, 'gotoHref'));
