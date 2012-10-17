@@ -1,0 +1,34 @@
+ plugins/content_types/apachesolr_result.inc | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/plugins/content_types/apachesolr_result.inc b/plugins/content_types/apachesolr_result.inc
+index 39d4af5..54dfa24 100644
+--- a/plugins/content_types/apachesolr_result.inc
++++ b/plugins/content_types/apachesolr_result.inc
+@@ -43,9 +43,25 @@ function apachesolr_panels_apachesolr_result_content_type_render($subtype, $conf
+   $block->module = 'apachesolr_panels';
+   $block->delta = 'results';
+ 
++  if (isset($_GET['filters'])) {
++    $new_query_string = $_GET;
++    unset($new_query_string['q']);
++    unset($new_query_string['filters']);
++    foreach (explode(' ', $_GET['filters']) as $filter) {
++      $filter = preg_replace('/im_\d+_*/', 'im_', $filter);
++      if (strpos($filter, ':') !== false) {
++        $new_query_string['f'][] = $filter;
++      }
++      else {
++        // There was a space inside our search parameter, so we shouldn't have exploded this
++        $new_query_string['f'][count($new_query_string['f']) - 1] .= ' '.$filter;
++      }
++    }
++    drupal_goto($_GET['q'], array('query' => $new_query_string), 301);
++  }
++
+   $search = array(
+     'keys' => '',
+-    'filters' => isset($_GET['filters']) ? $_GET['filters'] : '',
+     'sort' => isset($_GET['solrsort']) ? $_GET['solrsort'] : '',
+   );
+ 
