@@ -1,0 +1,37 @@
+diff --git a/cas.admin.inc b/cas.admin.inc
+index 0a8d726..ee084f9 100644
+--- a/cas.admin.inc
++++ b/cas.admin.inc
+@@ -91,6 +91,15 @@ function cas_admin_settings() {
+     '#description' => t('The PEM certificate of the Certificate Authority that issued the certificate of the CAS server. If omitted, the certificate authority will not be verified.'),
+   );
+ 
++  if (variable_get('cas_danger_sslcheck_exposed', FALSE) === TRUE) {
++    $form['server']['cas_no_sslcheck'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Disable SSL verification entirely?'),
++      '#description' => t('<strong>DANGER</strong> - do not use in production!'),
++      '#default_value' => variable_get('cas_no_sslcheck', 0),
++    );
++  }
++
+   $form['login'] = array(
+     '#type' => 'fieldset',
+     '#title' => t('Login form'),
+diff --git a/cas.module b/cas.module
+index d1d0f42..d916615 100644
+--- a/cas.module
++++ b/cas.module
+@@ -272,6 +272,12 @@ function cas_phpcas_init() {
+     phpCAS::setNoCasServerValidation();
+   }
+ 
++  // If the current site allows, tell cURL not to verify SSL certificates.
++  if (variable_get('cas_no_sslcheck', 0) == 1) {
++    phpCAS::setExtraCurlOption(CURLOPT_SSLVERSION,1);
++    phpCAS::setExtraCurlOption(CURLOPT_SSL_VERIFYPEER, 0);
++  }
++
+   $service = isset($_GET['q']) ? $_GET['q'] : 'cas';
+   phpCAS::setFixedServiceURL(url($service, array('query' => cas_login_destination(), 'absolute' => TRUE)));
+ 
