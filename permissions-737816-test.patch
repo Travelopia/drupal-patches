@@ -1,0 +1,68 @@
+ modules/user/user.module | 47 ++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 38 insertions(+), 9 deletions(-)
+
+diff --git a/modules/user/user.module b/modules/user/user.module
+index 5124207..96674c7 100644
+--- a/modules/user/user.module
++++ b/modules/user/user.module
+@@ -3092,22 +3092,51 @@ function user_role_change_permissions($rid, array $permissions = array()) {
+  */
+ function user_role_grant_permissions($rid, array $permissions = array()) {
+   $modules = user_permission_get_modules();
++  $skipped_permissions = array();
+   // Grant new permissions for the role.
+   foreach ($permissions as $name) {
+-    db_merge('role_permission')
+-      ->key(array(
+-        'rid' => $rid,
+-        'permission' => $name,
+-      ))
+-      ->fields(array(
+-        'module' => $modules[$name],
+-      ))
+-      ->execute();
++    if (empty($modules[$name])) {
++      $skipped_permissions[] = $permission;
++    }
++    else {
++      user_role_grant_permission($rid, $name, $modules[$name]);
++    }
+   }
+ 
+   // Clear the user access cache.
+   drupal_static_reset('user_access');
+   drupal_static_reset('user_role_permissions');
++  
++  if (count($skipped_permissions)) {
++    throw new Exception(format_plural(count($skipped_permissions), 
++      'Unable to grant permission @permissions.  The module in which it is defined is not enabled.',
++      'Unable to grant permissions: @permissions.  The module(s) in which they are defined are not enabled.',
++      array('@permission' => implode(', ', $permission))
++    ));
++  }
++}
++
++/**
++ * Grant a permission to a user role.
++ *
++ * @param $rid
++ *   The ID of a user role to alter.
++ * @param $permission
++ *   The name of the permission grant.
++ * @param $module
++ *   The name of the module the permission belongs to.
++ *
++ * @return int
++ *   Database query status code.
++ */
++function user_role_grant_permission($rid, $permission, $module) {
++  return db_merge('role_permission')
++    ->key(array(
++      'rid' => $rid,
++      'permission' => $permission,
++      'module' => $module,
++    ))
++    ->execute();
+ }
+ 
+ /**
