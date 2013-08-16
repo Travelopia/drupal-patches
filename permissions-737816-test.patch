@@ -22,7 +22,7 @@ index 5124207..96674c7 100644
 -      ))
 -      ->execute();
 +    if (empty($modules[$name])) {
-+      $skipped_permissions[] = $permission;
++      $skipped_permissions[] = $name;
 +    }
 +    else {
 +      user_role_grant_permission($rid, $name, $modules[$name]);
@@ -37,7 +37,7 @@ index 5124207..96674c7 100644
 +    throw new Exception(format_plural(count($skipped_permissions), 
 +      'Unable to grant permission @permissions.  The module in which it is defined is not enabled.',
 +      'Unable to grant permissions: @permissions.  The module(s) in which they are defined are not enabled.',
-+      array('@permission' => implode(', ', $permission))
++      array('@permissions' => implode(', ', $skipped_permissions))
 +    ));
 +  }
 +}
