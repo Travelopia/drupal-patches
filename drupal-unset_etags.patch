@@ -1,0 +1,17 @@
+diff --git a/.htaccess b/.htaccess
+index 7ccb6a2..367ca6f 100644
+--- a/.htaccess
++++ b/.htaccess
+@@ -52,6 +52,12 @@ DirectoryIndex index.php index.html index.htm
+   </FilesMatch>
+ </IfModule>
+ 
++# Turn ETags Off
++<IfModule mod_headers.c>
++    Header unset ETag
++</IfModule>
++FileETag None
++
+ # Various rewrite rules.
+ <IfModule mod_rewrite.c>
+   RewriteEngine on
