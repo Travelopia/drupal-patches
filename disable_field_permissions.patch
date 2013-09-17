@@ -1,0 +1,23 @@
+ includes/features.field.inc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/includes/features.field.inc b/includes/features.field.inc
+index 09104a3..2e8591b 100644
+--- a/includes/features.field.inc
++++ b/includes/features.field.inc
+@@ -164,10 +164,15 @@ function field_base_features_export_render($module, $data, $export = NULL) {
+         unset($field['storage']['details']);
+       }
+ 
++      // DOMINO patch: We hard code field_permissions to 0 in the export, so that we can change
++      // them on a per-brand basis using HOOK_field_default_field_bases_alter().
++      $field['field_permissions']['type'] = 0;
++
+       _field_instance_features_export_sort($field);
+       $field_export = features_var_export($field, '  ');
+       $field_identifier = features_var_export($identifier);
+       $code[] = "  // Exported field_base: {$field_identifier}";
++      $code[] = "  // Field permissions hardcoded to 0. See features.field.inc.";
+       $code[] = "  \$field_bases[{$field_identifier}] = {$field_export};";
+       $code[] = "";
+     }
