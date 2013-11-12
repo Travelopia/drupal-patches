@@ -1,0 +1,14 @@
+diff --git a/replicate.module b/replicate.module
+index faed03a..c800557 100644
+--- a/replicate.module
++++ b/replicate.module
+@@ -83,6 +83,9 @@ function replicate_clone_entity_by_id($entity_type, $id) {
+  *   A new replicated entity.
+  */
+ function replicate_clone_entity($entity_type, $entity) {
++  // Increase execution time to avoid timeout.
++  ini_set('max_execution_time', 30);
++
+   $clone = clone $entity;
+ 
+   if ($clone) {
