@@ -1,0 +1,21 @@
+diff --git "a/C:\\Users\\Colin Stillwell\\Desktop\\leaflet_widget.module.txt" "b/C:\\Users\\Colin Stillwell\\VirtualBox Shared\\sites\\domino\\www\\profiles\\domino_profile\\modules\\contrib\\leaflet_widget\\leaflet_widget.module"
+index b81a7d7..a223166 100644
+--- "a/C:\\Users\\Colin Stillwell\\Desktop\\leaflet_widget.module.txt"	
++++ "b/C:\\Users\\Colin Stillwell\\VirtualBox Shared\\sites\\domino\\www\\profiles\\domino_profile\\modules\\contrib\\leaflet_widget\\leaflet_widget.module"	
+@@ -266,11 +266,13 @@ function leaflet_widget_geojson_feature_collection($features, $properties = arra
+   );
+ }
+ 
+-function leaflet_widget_geojson_feature($wkb, $properties = array()) {
++function leaflet_widget_geojson_feature($wkt, $properties = array()) {
+   $geophp = geophp_load();
+   if (!$geophp) return FALSE;
+-
+-  $geometry = geoPHP::load($wkb, 'wkb');
++  
++  $geometry = geoPHP::load($wkt, 'wkt');
++  if (!$geometry) return FALSE;
++  
+   return array(
+     'type' => 'Feature',
+     'geometry' => json_decode($geometry->out('json')),
