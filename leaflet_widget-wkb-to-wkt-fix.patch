@@ -1,7 +1,7 @@
-diff --git "a/C:\\Users\\Colin Stillwell\\Desktop\\leaflet_widget.module.txt" "b/C:\\Users\\Colin Stillwell\\VirtualBox Shared\\sites\\domino\\www\\profiles\\domino_profile\\modules\\contrib\\leaflet_widget\\leaflet_widget.module"
+diff --git a/leaflet_widget.module b/leaflet_widget.module
 index b81a7d7..a223166 100644
---- "a/C:\\Users\\Colin Stillwell\\Desktop\\leaflet_widget.module.txt"	
-+++ "b/C:\\Users\\Colin Stillwell\\VirtualBox Shared\\sites\\domino\\www\\profiles\\domino_profile\\modules\\contrib\\leaflet_widget\\leaflet_widget.module"	
+--- a/leaflet_widget.module
++++ b/leaflet_widget.module
 @@ -266,11 +266,13 @@ function leaflet_widget_geojson_feature_collection($features, $properties = arra
    );
  }
