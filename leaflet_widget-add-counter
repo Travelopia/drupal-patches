@@ -1,0 +1,19 @@
+diff --git a/leaflet_widget.module b/leaflet_widget.module
+index b81a7d7..8a53dc9 100644
+--- a/leaflet_widget.module
++++ b/leaflet_widget.module
+@@ -103,6 +103,14 @@ function leaflet_widget_field_widget_form(&$form, &$form_state, $field, $instanc
+       $id = 'leaflet-widget_' . str_replace('_', '-', $instance['field_name']);
+       $class = 'leaflet-widget';
+       $style = 'height: 300px;';
++      
++      // Add counter and append to id.
++      if (empty($form_state['leaflet_widget_widget_count'])) {
++        $form_state['leaflet_widget_widget_count'] = 1;
++      } else {
++        $form_state['leaflet_widget_widget_count']++;
++      }      
++      $id .=  '-count' . $form_state['leaflet_widget_widget_count'];
+ 
+       $settings['map']['widget'] = array();
+       $settings['map']['widget']['attach'] = "$id-input";
