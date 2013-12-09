@@ -1,0 +1,14 @@
+diff --git a/leaflet.drupal.js b/leaflet.drupal.js
+index c9dc366..6c3f2b1 100644
+--- a/leaflet.drupal.js
++++ b/leaflet.drupal.js	
+@@ -245,6 +245,9 @@
+         if (marker.icon.zIndexOffset) {
+           icon.options.zIndexOffset = marker.icon.zIndexOffset;
+         }
++        if (marker.html_class) {
++          icon.options.className = marker.html_class;
++        }
+         var options = {icon:icon};
+         if (marker.zIndexOffset) {
+           options.zIndexOffset = marker.zIndexOffset;
