@@ -1,0 +1,40 @@
+diff --git a/leaflet_widget.module b/leaflet_widget.module
+index d1c334e..d745ca8 100644
+--- a/leaflet_widget.module
++++ b/leaflet_widget.module
+@@ -209,7 +209,7 @@ function leaflet_widget_library() {
+     'title' => 'Widget behavior',
+     'version' => '1.x',
+     'js' => array(
+-      "$path/js/widget.js" => array(),
++      "$path/js/widget.js" => array('preprocess' => FALSE,),
+     ),
+     'dependencies' => array(
+       array('leaflet_widget', 'Leaflet.widget'),
+@@ -223,7 +223,7 @@ function leaflet_widget_library() {
+       "$leaflet_widget/dist/Leaflet.widget.min.css" => array(),
+     ),
+     'js' => array(
+-      "$leaflet_widget/dist/Leaflet.widget.js" => array(),
++      "$leaflet_widget/dist/Leaflet.widget.js" => array('preprocess' => FALSE,),
+     ),
+     'dependencies' => array(
+       array('leaflet_widget', 'Leaflet.draw'),
+@@ -237,7 +237,7 @@ function leaflet_widget_library() {
+       "$leaflet_widget/lib/Leaflet.draw/leaflet.draw.css" => array(),
+     ),
+     'js' => array(
+-      "$leaflet_widget/lib/Leaflet.draw/leaflet.draw-src.js" => array(),
++      "$leaflet_widget/lib/Leaflet.draw/leaflet.draw-src.js" => array('preprocess' => FALSE,),
+     ),
+     'dependencies' => array(
+       array('leaflet_widget', 'Leaflet'),
+@@ -256,7 +256,7 @@ function leaflet_widget_library() {
+       "$leaflet/leaflet.ie.css" => array('browsers' => array('IE' => 'lte IE 8')),
+     ),
+     'js' => array(
+-      "$leaflet/leaflet-src.js" => array(),
++      "$leaflet/leaflet-src.js" => array('preprocess' => FALSE,),
+     ),
+   );
+ 
