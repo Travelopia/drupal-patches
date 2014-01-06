@@ -1,0 +1,21 @@
+diff --git a/js/widget.js b/js/widget.js
+index e0a4274..dea2442 100644
+--- a/js/widget.js
++++ b/js/widget.js
+@@ -9,13 +9,11 @@
+     function attach(context, settings) {
+         $('.leaflet-widget').once().each(function(i, item) {
+             var id = $(item).attr('id'),
+-                options = settings.leaflet_widget_widget[id];
++                options = settings.leaflet_widget_widget[id],
++                map = L.map(id, options.map);
+ 
+-            L.Util.extend(options.map, {
+-                layers: [L.tileLayer(options.map.base_url)],
+-            });
++            L.tileLayer(options.map.base_url, {noWrap: true}).addTo(map);
+ 
+-            var map = L.map(id, options.map);
+             map.widget.enable();
+ 
+             // Serialize data and set input value on submit.
