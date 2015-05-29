@@ -1,0 +1,39 @@
+diff --git a/field_formatter_settings.module b/field_formatter_settings.module
+index 2806abe..87642c9 100644
+--- a/field_formatter_settings.module
++++ b/field_formatter_settings.module
+@@ -22,7 +22,7 @@ function field_formatter_settings_hook_info() {
+  *
+  * @return array
+  */
+-function field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode) {
++function field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode, $entity) {
+   // There is no bundle for this entity type so the bundle name in the
+   // entity_type name.
+   if (empty($bundle)) {
+@@ -34,11 +34,23 @@ function field_formatter_settings_get_instance_display_settings($entity_type, $f
+   $defaults = $info['display']['default']['settings'];
+ 
+   if (isset($info['display'][$view_mode]['settings'])) {
+-    return $info['display'][$view_mode]['settings'] + $defaults;
++    $settings = $info['display'][$view_mode]['settings'] + $defaults;
+   }
+   else {
+-    return $defaults;
++    $settings = $defaults;
+   }
++
++  $alter_context = array(
++    'entity_type' => $entity_type,
++    'field_name' => $field_name,
++    'bundle' => $bundle,
++    'view_mode' => $view_mode,
++    'entity' => $entity,
++  );
++
++  drupal_alter('field_formatter_settings_get_instance_display_settings', $settings, $alter_context);
++
++  return $settings;
+ }
+ 
+ /**
