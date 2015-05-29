@@ -1,0 +1,15 @@
+diff --git a/field_formatter_class.module b/field_formatter_class.module
+index 4110daf..f4275da 100644
+--- a/field_formatter_class.module
++++ b/field_formatter_class.module
+@@ -59,8 +59,9 @@ function field_formatter_class_preprocess_field(&$variables, $hook) {
+   $field_name  = $variables['element']['#field_name'];
+   $bundle      = $variables['element']['#bundle'];
+   $view_mode   = $variables['element']['#view_mode'];
++  $entity      = $variables['element']['#object'];
+ 
+-  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode);
++  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode, $entity);
+ 
+   // add class for whole field
+   if (!empty($formatter_info['field_formatter_class'])) {

@@ -1,0 +1,15 @@
+diff --git a/field_formatter_attributes.module b/field_formatter_attributes.module
+index 77aef5e..d1f5e03 100644
+--- a/field_formatter_attributes.module
++++ b/field_formatter_attributes.module
+@@ -121,8 +121,9 @@ function field_formatter_attributes_preprocess_field(&$variables, $hook) {
+   $field_name  = $variables['element']['#field_name'];
+   $bundle      = $variables['element']['#bundle'];
+   $view_mode   = $variables['element']['#view_mode'];
++  $entity      = $variables['element']['#object'];
+ 
+-  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode);
++  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode, $entity);
+ 
+   // Merge in our additional attributes.
+   if (!empty($formatter_info['field_formatter_attributes'])) {

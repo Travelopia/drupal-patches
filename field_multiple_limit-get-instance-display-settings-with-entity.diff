@@ -1,0 +1,13 @@
+diff --git a/field_multiple_limit.module b/field_multiple_limit.module
+index e570812..c5ffdf4 100644
+--- a/field_multiple_limit.module
++++ b/field_multiple_limit.module
+@@ -77,7 +77,7 @@ function field_multiple_limit_field_attach_view_alter(&$output, $context) {
+     $entity_type = $output[$field_name]['#entity_type'];
+     $bundle      = $output[$field_name]['#bundle'];
+ 
+-    $info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $context['view_mode']);
++    $info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $context['view_mode'], $context['entity']);
+ 
+     $limit = empty($info['field_multiple_limit']) ? FIELD_MULTIPLE_LIMIT_ALL : $info['field_multiple_limit'];
+     $offset = empty($info['field_multiple_limit_offset']) ? 0 : $info['field_multiple_limit_offset'];
