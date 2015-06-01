@@ -1,0 +1,48 @@
+diff --git a/field_formatter_label.module b/field_formatter_label.module
+index 134bb70..33ba607 100644
+--- a/field_formatter_label.module
++++ b/field_formatter_label.module
+@@ -44,33 +44,18 @@ function field_formatter_label_field_formatter_settings_form_alter(&$settings_fo
+ }
+ 
+ /**
+- * Implements hook_module_implements_alter().
++ *  Preprocess function to replace the regular label with the display label
+  */
+-function field_formatter_label_module_implements_alter(&$implementations, $hook) {
+-  // Make sure our hook_theme_registry_alter runs after field_display_label's.
+-  // This causes our preprocess_field hook to run after its one.
+-  if ($hook == 'theme_registry_alter') {
+-    $group = $implementations['field_formatter_label'];
+-    unset($implementations['field_formatter_label']);
+-    $implementations['field_formatter_label'] = $group;
+-  }
+-}
++function field_formatter_label_preprocess_field(&$variables) {
++  $entity_type = $variables['element']['#entity_type'];
++  $field_name  = $variables['element']['#field_name'];
++  $bundle      = $variables['element']['#bundle'];
++  $view_mode   = $variables['element']['#view_mode'];
++  $entity      = $variables['element']['#object'];
+ 
+-/**
+-*  Implementation of hook_theme_registry_alter
+-*/
+-function field_formatter_label_theme_registry_alter(&$theme_registry) {
+-  // Move our hook_preprocess_field to the end of the array.
+-  $theme_registry['field']['preprocess functions'] = array_diff($theme_registry['field']['preprocess functions'], array('field_display_label_preprocess_field'));
+-  $theme_registry['field']['preprocess functions'][] = 'field_display_label_preprocess_field';
+-}
++  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode, $entity);
+ 
+-/**
+-*  Preprocess function to replace the regular label with the display label
+-*/
+-function field_formatter_label_preprocess_field(&$variables) {
+-  $field = field_info_instance($variables['element']['#entity_type'], $variables['element']['#field_name'], $variables['element']['#bundle']);
+-  if (isset($field['display_label']) && strlen(trim($field['display_label'])) > 0) {
+-    $variables['label'] = $field['display_label'];
++  if (!empty($formatter_info['field_formatter_label'])) {
++    $variables['label'] = $formatter_info['field_formatter_label'];
+   }
+ }
