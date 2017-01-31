@@ -1,0 +1,302 @@
+commit 61506677adb220d5e6068825c79c1a5390a1ec05
+Author: Justin Longbottom <jlongbottom@gmail.com>
+Date:   Thu Jan 12 10:17:29 2017 -0500
+
+    patch
+
+diff --git a/wordpress_attachment.inc b/wordpress_attachment.inc
+index 8a08d3f..9b3c743 100644
+--- a/wordpress_attachment.inc
++++ b/wordpress_attachment.inc
+@@ -182,6 +182,7 @@ class WordPressAttachment extends WordPressMigration {
+     if (!$file->fid) {
+       return;
+     }
++    $source_post_parent_id = $row->{'wp:post_parent'};
+     // Find the parent nid
+     $row->{'wp:post_parent'} = $this->handleSourceMigration($this->dependencies, $row->{'wp:post_parent'});
+ 
+@@ -204,6 +205,12 @@ class WordPressAttachment extends WordPressMigration {
+ 
+       if (!empty($post_map_row)) {
+         $attachment_field = $this->arguments['blog_attachment_field'];
++
++        // Banner images go into their own field
++        $mapping = variable_get('exo_blog_migrate_hero_mapping', array());
++        if($mapping[$source_post_parent_id] == $row->{'wp:post_id'}) {
++          $attachment_field = 'field_hero_image_override';
++        }
+       }
+       else {
+         /** @var Migration $page_migration */
+diff --git a/wordpress_category.inc b/wordpress_category.inc
+index f6bdb59..ecdda1f 100644
+--- a/wordpress_category.inc
++++ b/wordpress_category.inc
+@@ -20,7 +20,7 @@ class WordPressCategory extends WordPressMigration {
+     // identifier of a category.
+     $this->map = new MigrateSQLMap($this->machineName,
+       array(
+-        'wp:category_nicename' => array(
++        'wp:term_slug' => array(
+           'type' => 'varchar',
+           'length' => 255,
+           'not null' => TRUE,
+@@ -31,10 +31,12 @@ class WordPressCategory extends WordPressMigration {
+     );
+ 
+     $fields = array(
+-      'wp:category_nicename' => 'Unique "machine name" of the category',
+-      'wp:category_parent' => 'Category parent (nicename?)',
+-      'wp:cat_name' => 'User-friendly category name',
+-      'wp:category_description' => 'Description of category',
++      'wp:term_id' => 'ID of term',
++      'wp:term_taxonomy' => 'Vocabulary of this term.',
++      'wp:term_slug' => 'Unique "machine name" of the category',
++      'wp:term_parent' => 'Category parent (nicename?)',
++      'wp:term_name' => 'User-friendly category name',
++      'wp:term_description' => 'Description of category',
+     );
+ 
+     // Construct the source and destination objects.
+@@ -42,20 +44,18 @@ class WordPressCategory extends WordPressMigration {
+       'reader_class' => 'MigrateXMLReader',
+       'cache_counts' => TRUE,
+     );
+-    $this->source = new MigrateSourceXML($this->wxrFile, '/rss/channel/category',
+-      'wp:category_nicename', $fields, $source_options, $this->arguments['namespaces']);
+-    $this->destination = new MigrateDestinationTerm($this->arguments['category_vocabulary']);
++    $this->source = new MigrateSourceXML($this->wxrFile, '/rss/channel/wp:term',
++      'wp:term_slug', $fields, $source_options, $this->arguments['namespaces']);
++    $this->destination = new MigrateDestinationTerm('regions_destinations');
+ 
+     // The basic mappings
+-    $this->addFieldMapping('name', 'wp:cat_name')
+-         ->xpath('wp:cat_name')
++    $this->addFieldMapping('name', 'wp:term_name')
++         ->xpath('wp:term_name')
+          ->callbacks('html_entity_decode');
+-    $this->addFieldMapping('description', 'wp:category_description')
+-         ->xpath('wp:category_description')
++
++    $this->addFieldMapping('description', 'wp:term_description')
++         ->xpath('wp:term_description')
+          ->callbacks('html_entity_decode');
+-    $this->addFieldMapping('parent', 'wp:category_parent')
+-         ->sourceMigration($this->machineName)
+-         ->xpath('wp:category_parent');
+ 
+     // Unmapped destination fields
+     $this->addFieldMapping('parent_name');
+@@ -63,4 +63,20 @@ class WordPressCategory extends WordPressMigration {
+     $this->addFieldMapping('weight');
+     $this->addFieldMapping('path');
+   }
++
++  public function prepareRow($row) {
++    $vocabulary = $row->xml->xpath('wp:term_taxonomy');
++    $vocabulary = (string) $vocabulary[0];
++
++    // Always include this fragment at the beginning of every prepareRow()
++    // implementation, so parent classes can ignore rows.
++    if (parent::prepareRow($row) === FALSE) {
++      return FALSE;
++    }
++
++    if($vocabulary != 'destinations') {
++      return FALSE;
++    }
++    return TRUE;
++  }
+ }
+diff --git a/wordpress_item.inc b/wordpress_item.inc
+index 21fb86c..2291063 100644
+--- a/wordpress_item.inc
++++ b/wordpress_item.inc
+@@ -70,6 +70,7 @@ class WordPressItemSource extends MigrateSourceXML {
+       'wp:post_password' => '?',
+       'wp:is_sticky' => 'Equivalent to Drupal sticky flag',
+       'category' => 'Categories (as nicename) assigned to this item',
++      'category2' => 'Duplicate of "category"',
+       'tag' => 'Tags (as nicename) assigned to this item',
+       'content' => 'Extracted from Wordpress content:encoded',
+       'status' => 'Extracted from Wordpress status',
+@@ -260,34 +261,21 @@ abstract class WordPressItemMigration extends WordPressMigration {
+     }
+ 
+     if (module_exists('taxonomy')) {
+-      // Map the source fields to the configured vocabularies. Note the nicename
+-      // (WordPress machine name) is used for matching on sourceMigration - we
+-      // pull the actual tag/category separately in case we need to handle it
+-      // in prepare().
+-      if ($this->tagField) {
+-        $this->addFieldMapping($this->tagField, 'tag')
+-          ->sourceMigration($arguments['group_name'] . $arguments['tag_migration'])
+-          ->xpath('category[@domain="post_tag"]/@nicename');
+-        $this->addFieldMapping(NULL, 'tag_value')
+-          ->xpath('category[@domain="post_tag"]');
+-        $this->addFieldMapping($this->tagField . ':source_type')
+-             ->defaultValue('tid');
+-      }
+-      else {
+-        $this->addFieldMapping(NULL, 'tag');
+-      }
+-      if ($this->categoryField) {
+-        $this->addFieldMapping($this->categoryField, 'category')
++
++      // Exo Destinations entity reference
++      $this->addFieldMapping('field_destinations', 'category')
+           ->sourceMigration($arguments['group_name'] . $arguments['category_migration'])
+-          ->xpath('category[@domain="category"]/@nicename');
+-        $this->addFieldMapping(NULL, 'category_value')
+-          ->xpath('category[@domain="category"]');
+-        $this->addFieldMapping($this->categoryField . ':source_type')
+-             ->defaultValue('tid');
+-      }
+-      else {
+-        $this->addFieldMapping(NULL, 'category');
+-      }
++          ->xpath('category[@domain="destinations"]/@nicename');
++
++      $this->addFieldMapping('field_regions', 'category')
++          ->sourceMigration($arguments['group_name'] . $arguments['category_migration'])
++          ->xpath('category[@domain="destinations"]/@nicename');
++
++      // Exo Activities entity reference
++      $this->addFieldMapping('field_activities', 'category2')
++          ->sourceMigration($arguments['group_name'] . $arguments['tag_migration'])
++          ->xpath('category[@domain="activities"]/@nicename');
++
+     }
+ 
+     // If podcast migration is requested, add the mapping.
+@@ -341,7 +329,23 @@ abstract class WordPressItemMigration extends WordPressMigration {
+    * @return string
+    */
+   public function prepareRow($row) {
++    // Duplicate category list because it has terms from both destinations and
++    // activities vocabularies and they need to mapped separately.
++    $row->category2 = $row->category;
++
+     $wp_row = $row->xml->children($this->arguments['namespaces']['wp']);
++
++    // Check if the post has a banner image.
++    foreach($wp_row->postmeta as $postmeta) {
++      $meta_key = (string) $postmeta->meta_key;
++      if($meta_key == 'banner_image') {
++        $meta_value = (int) $postmeta->meta_value;
++        $mapping = variable_get('exo_blog_migrate_hero_mapping', array());
++        $mapping[$row->{'wp:post_id'}] = $meta_value;
++        variable_set('exo_blog_migrate_hero_mapping', $mapping);
++      }
++    }
++
+     $content_row = $row->xml->children($this->arguments['namespaces']['content']);
+ 
+     // Skip any of the wrong post type
+@@ -406,6 +410,13 @@ abstract class WordPressItemMigration extends WordPressMigration {
+ 
+     $row->content = $content_row->encoded;
+ 
++    // Update links to images to be relative paths that point to the destination
++    // directory of the Attachment migration.
++    $original_image_pattern   = "/(http:\/\/experts.exodus.co.uk\/content\/uploads\/)(\d{4}\/\d{2}\/.*\..{3})/";
++    $derivative_image_pattern = "/(http:\/\/experts.exodus.co.uk\/content\/uploads\/)(\d{4}\/\d{2}\/)(.*)-\d{3}x\d{3}/";
++    $row->content = preg_replace($original_image_pattern, "/sites/exod/files/content/uploads/$2", $row->content);
++    $row->content = preg_replace($derivative_image_pattern, "/sites/exod/files/content/uploads/$2$3", $row->content);
++
+     // Interpret the [caption] tags
+     $row->content = preg_replace_callback('|(\[caption.*?\])(.*?)(\[/caption\])|i',
+       array($this, 'replaceCaptions'), $row->content);
+diff --git a/wordpress_migrate.migrate.inc b/wordpress_migrate.migrate.inc
+index 7e2cc87..c94c2f8 100644
+--- a/wordpress_migrate.migrate.inc
++++ b/wordpress_migrate.migrate.inc
+@@ -794,7 +794,8 @@ class WordPressMigrateWizard extends MigrateUIWizard {
+     $term_fields = array();
+     foreach ($fields as $field_name => $instance_info) {
+       $field_info = field_info_field($field_name);
+-      if ($field_info['type'] == 'taxonomy_term_reference') {
++      if ($field_info['type'] == 'taxonomy_term_reference'
++        OR $field_info['type'] == 'entityreference') {
+         $term_fields[$field_name] = $instance_info['label'];
+       }
+     }
+diff --git a/wordpress_tag.inc b/wordpress_tag.inc
+index a0bd279..8c9ec53 100644
+--- a/wordpress_tag.inc
++++ b/wordpress_tag.inc
+@@ -20,7 +20,7 @@ class WordPressTag extends WordPressMigration {
+     // identifier of a tag.
+     $this->map = new MigrateSQLMap($this->machineName,
+       array(
+-        'wp:tag_slug' => array(
++        'wp:term_slug' => array(
+           'type' => 'varchar',
+           'length' => 255,
+           'not null' => TRUE,
+@@ -31,9 +31,12 @@ class WordPressTag extends WordPressMigration {
+     );
+ 
+     $fields = array(
+-        'wp:tag_slug' => 'Unique "machine name" of the tag',
+-        'wp:tag_name' => 'User-friendly tag name',
+-        'wp:tag_description' => 'Description of tag',
++      'wp:term_id' => 'ID of term',
++      'wp:term_taxonomy' => 'Vocabulary of this term.',
++      'wp:term_slug' => 'Unique "machine name" of the category',
++      'wp:term_parent' => 'Category parent (nicename?)',
++      'wp:term_name' => 'User-friendly category name',
++      'wp:term_description' => 'Description of category',
+     );
+ 
+     // Construct the source and destination objects.
+@@ -41,19 +44,18 @@ class WordPressTag extends WordPressMigration {
+       'reader_class' => 'MigrateXMLReader',
+       'cache_counts' => TRUE,
+     );
+-    $this->source = new MigrateSourceXML($this->wxrFile, '/rss/channel/tag',
+-      'wp:tag_slug', $fields, $source_options, $this->arguments['namespaces']);
+-    $this->destination = new MigrateDestinationTerm($arguments['tag_vocabulary']);
++    $this->source = new MigrateSourceXML($this->wxrFile, '/rss/channel/wp:term',
++      'wp:term_slug', $fields, $source_options, $this->arguments['namespaces']);
++    $this->destination = new MigrateDestinationTerm('activities');
+ 
+     // The basic mappings
+-    $this->addFieldMapping('name', 'wp:tag_name')
+-         ->xpath('wp:tag_name')
++    $this->addFieldMapping('name', 'wp:term_name')
++         ->xpath('wp:term_name')
+          ->callbacks('html_entity_decode');
+-    $this->addFieldMapping('description', 'wp:tag_description')
+-         ->xpath('wp:tag_description')
++
++    $this->addFieldMapping('description', 'wp:term_description')
++         ->xpath('wp:term_description')
+          ->callbacks('html_entity_decode');
+-    $this->addFieldMapping('parent_name')
+-         ->issueGroup('DNM');
+ 
+     // Unmapped destination fields
+     $this->addFieldMapping('parent');
+@@ -61,4 +63,20 @@ class WordPressTag extends WordPressMigration {
+     $this->addFieldMapping('weight');
+     $this->addFieldMapping('path');
+   }
++
++  public function prepareRow($row) {
++    $vocabulary = $row->xml->xpath('wp:term_taxonomy');
++    $vocabulary = (string) $vocabulary[0];
++
++    // Always include this fragment at the beginning of every prepareRow()
++    // implementation, so parent classes can ignore rows.
++    if (parent::prepareRow($row) === FALSE) {
++      return FALSE;
++    }
++
++    if($vocabulary != 'activities') {
++      return FALSE;
++    }
++    return TRUE;
++  }
+ }
