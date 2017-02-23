@@ -1,0 +1,68 @@
+diff --git a/panels.module b/panels.module
+index 4b8c731..410411a 100644
+--- a/panels.module
++++ b/panels.module
+@@ -946,8 +946,32 @@ function panels_save_display(&$display) {
+   if (empty($display->uuid) || !ctools_uuid_is_valid($display->uuid)) {
+     $display->uuid = ctools_uuid_generate();
+   }
++
++  // Make sure the display has a storage type
++  if (empty($display->storage_type) || $display->storage_type == 'unknown') {
++    $display->storage_type = 'page_manager';
++  }
++
+   drupal_write_record('panels_display', $display, $update);
+ 
++  // Make sure the display has a storage_id
++  if (empty($display->storage_id)) {
++    // Try to find the corresponding handler
++    $handler = panels_get_page_manager_handler_by_display_id($display->did);
++
++    if (!empty($handler)) {
++      $display->storage_id = $handler->name;
++
++      // Write storage_id to DB
++      db_update('panels_display')
++          ->fields(array(
++            'storage_id' => $display->storage_id,
++          ))
++          ->condition('did', $display->did)
++          ->execute();
++    }
++  }
++
+   $pids = array();
+   if ($update) {
+     // Get a list of all panes currently in the database for this display so we can know if there
+@@ -2019,3 +2043,29 @@ function panels_preprocess_html(&$vars) {
+     $vars['classes_array'][] = check_plain($panel_body_css['body_classes_to_add']);
+   }
+ }
++
++/**
++ * Find the page manager handler for a specific panels display Id.
++ * 
++ * @param string $did Id of the panels display
++ * @return object The DB row of that handler
++ */
++function panels_get_page_manager_handler_by_display_id($did) {
++  if (!db_table_exists('page_manager_handlers')) {
++    return t('Page_manager is not installed.');
++  }
++
++  // Get all page_manager_handlers that have a panels context.
++  $result = db_query("SELECT pm.name, pm.conf FROM {page_manager_handlers} pm WHERE pm.handler = 'panel_context'");
++
++  // Find the handler corresponding to the display Id
++  $page_manager_handlers = array();
++  foreach ($result as $row) {
++    $conf = unserialize($row->conf);
++    if (isset($conf['did']) && $conf['did'] == $did) {
++      $page_manager_handlers[] = $row;
++    }
++  }
++
++  return !empty($page_manager_handlers) ? $page_manager_handlers[0] : NULL;
++}
+
