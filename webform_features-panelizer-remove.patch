@@ -1,0 +1,13 @@
+diff --git a/webform_features.features.inc b/webform_features.features.inc
+index f0b7ed8..01aa92a 100644
+--- a/webform_features.features.inc
++++ b/webform_features.features.inc
+@@ -83,6 +83,7 @@ function webform_features_export_render($module_name, $data, $export = NULL) {
+     unset($export->webform['nid']);
+     unset($export->webform['next_serial']);
+     unset($export->path['source']);
++    unset($export->panelizer);
+ 
+     // Manage components.
+     $components_machine_names = array();
+
