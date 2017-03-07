@@ -1,0 +1,14 @@
+diff --git a/panopoly_wysiwyg.make b/panopoly_wysiwyg.make
+index 5ebcba2..cb9dde0 100644
+--- a/panopoly_wysiwyg.make
++++ b/panopoly_wysiwyg.make
+@@ -12,6 +12,9 @@ projects[wysiwyg][patch][1786732] = http://drupal.org/files/wysiwyg-arbitrary_im
+ projects[wysiwyg][patch][1802394] = http://drupal.org/files/wysiwyg-1802394-4.patch
+ projects[wysiwyg][patch][934976] = https://drupal.org/files/wysiwyg-one-format.934976.23-alt.patch
+ projects[wysiwyg][patch][1757684] = https://www.drupal.org/files/issues/wysiwyg-1757684.28.patch
++; Patch wysiwyg module to permit profile inheritance.
++; @see: https://www.drupal.org/node/2786199#comment-11525039
++projects[wysiwyg][patch][2786199] = https://www.drupal.org/files/issues/2786199-use-libraries-search-function.patch
+ 
+ projects[wysiwyg_filter][version] = 1.6-rc2
+ projects[wysiwyg_filter][subdir] = contrib

@@ -1,0 +1,21 @@
+Index: modules/media_wysiwyg/wysiwyg_plugins/media_ckeditor/library.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- modules/media_wysiwyg/wysiwyg_plugins/media_ckeditor/library.js	(revision )
++++ modules/media_wysiwyg/wysiwyg_plugins/media_ckeditor/library.js	(revision )
+@@ -51,7 +51,12 @@
+
+       // Use own wrapper element to be able to properly deal with selections.
+       // Check prepareDataForWysiwygMode() in plugin.js for details.
+-      var wysiwygHTML = Drupal.media.filter.getWysiwygHTML(element);
++      var wysiwygHTML;
++      if (formattedMedia.type == 'colorbox') {
++        wysiwygHTML = formattedMedia.html;
++      } else {
++        wysiwygHTML = Drupal.media.filter.getWysiwygHTML(element);
++      }
+ 
+       // Insert element. Use CKEDITOR.dom.element.createFromHtml to ensure our
+       // custom wrapper element is preserved.
