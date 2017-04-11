@@ -1,8 +1,15 @@
-commit 61506677adb220d5e6068825c79c1a5390a1ec05
-Author: Justin Longbottom <jlongbottom@gmail.com>
-Date:   Thu Jan 12 10:17:29 2017 -0500
+From cbf24d3be76ad885a28989019ecd26193b8e7a22 Mon Sep 17 00:00:00 2001
+From: Justin Longbottom <jlongbottom@gmail.com>
+Date: Mon, 10 Apr 2017 17:44:54 -0400
+Subject: [PATCH] patch for exodus
 
-    patch
+---
+ wordpress_attachment.inc      |  7 +++++
+ wordpress_category.inc        | 49 ++++++++++++++++++++----------
+ wordpress_item.inc            | 69 ++++++++++++++++++++++++++-----------------
+ wordpress_migrate.migrate.inc |  3 +-
+ wordpress_tag.inc             | 47 +++++++++++++++++++++--------
+ 5 files changed, 119 insertions(+), 56 deletions(-)
 
 diff --git a/wordpress_attachment.inc b/wordpress_attachment.inc
 index 8a08d3f..9b3c743 100644
@@ -30,7 +37,7 @@ index 8a08d3f..9b3c743 100644
        else {
          /** @var Migration $page_migration */
 diff --git a/wordpress_category.inc b/wordpress_category.inc
-index f6bdb59..ecdda1f 100644
+index f6bdb59..9364cd6 100644
 --- a/wordpress_category.inc
 +++ b/wordpress_category.inc
 @@ -20,7 +20,7 @@ class WordPressCategory extends WordPressMigration {
@@ -59,7 +66,7 @@ index f6bdb59..ecdda1f 100644
      );
  
      // Construct the source and destination objects.
-@@ -42,20 +44,18 @@ class WordPressCategory extends WordPressMigration {
+@@ -42,20 +44,21 @@ class WordPressCategory extends WordPressMigration {
        'reader_class' => 'MigrateXMLReader',
        'cache_counts' => TRUE,
      );
@@ -85,10 +92,13 @@ index f6bdb59..ecdda1f 100644
 -    $this->addFieldMapping('parent', 'wp:category_parent')
 -         ->sourceMigration($this->machineName)
 -         ->xpath('wp:category_parent');
++
++    $this->addFieldMapping('language')
++      ->defaultValue('en');
  
      // Unmapped destination fields
      $this->addFieldMapping('parent_name');
-@@ -63,4 +63,20 @@ class WordPressCategory extends WordPressMigration {
+@@ -63,4 +66,20 @@ class WordPressCategory extends WordPressMigration {
      $this->addFieldMapping('weight');
      $this->addFieldMapping('path');
    }
@@ -110,7 +120,7 @@ index f6bdb59..ecdda1f 100644
 +  }
  }
 diff --git a/wordpress_item.inc b/wordpress_item.inc
-index 21fb86c..2291063 100644
+index 21fb86c..1f0d20e 100644
 --- a/wordpress_item.inc
 +++ b/wordpress_item.inc
 @@ -70,6 +70,7 @@ class WordPressItemSource extends MigrateSourceXML {
@@ -121,7 +131,18 @@ index 21fb86c..2291063 100644
        'tag' => 'Tags (as nicename) assigned to this item',
        'content' => 'Extracted from Wordpress content:encoded',
        'status' => 'Extracted from Wordpress status',
-@@ -260,34 +261,21 @@ abstract class WordPressItemMigration extends WordPressMigration {
+@@ -202,6 +203,10 @@ abstract class WordPressItemMigration extends WordPressMigration {
+          ->xpath('excerpt:encoded');
+     $this->addFieldMapping('body:format')
+          ->defaultValue($this->arguments['text_format']);
++    $this->addFieldMapping('body:language')
++      ->defaultValue('en');
++    $this->addFieldMapping('language')
++      ->defaultValue('en');
+     if (module_exists('comment')) {
+       $this->addFieldMapping('comment', 'wp:comment_status')
+            ->xpath('wp:comment_status')
+@@ -260,34 +265,21 @@ abstract class WordPressItemMigration extends WordPressMigration {
      }
  
      if (module_exists('taxonomy')) {
@@ -170,7 +191,7 @@ index 21fb86c..2291063 100644
      }
  
      // If podcast migration is requested, add the mapping.
-@@ -341,7 +329,23 @@ abstract class WordPressItemMigration extends WordPressMigration {
+@@ -341,7 +333,23 @@ abstract class WordPressItemMigration extends WordPressMigration {
     * @return string
     */
    public function prepareRow($row) {
@@ -194,7 +215,7 @@ index 21fb86c..2291063 100644
      $content_row = $row->xml->children($this->arguments['namespaces']['content']);
  
      // Skip any of the wrong post type
-@@ -406,6 +410,13 @@ abstract class WordPressItemMigration extends WordPressMigration {
+@@ -406,6 +414,13 @@ abstract class WordPressItemMigration extends WordPressMigration {
  
      $row->content = $content_row->encoded;
  
@@ -223,7 +244,7 @@ index 7e2cc87..c94c2f8 100644
        }
      }
 diff --git a/wordpress_tag.inc b/wordpress_tag.inc
-index a0bd279..8c9ec53 100644
+index a0bd279..44cce22 100644
 --- a/wordpress_tag.inc
 +++ b/wordpress_tag.inc
 @@ -20,7 +20,7 @@ class WordPressTag extends WordPressMigration {
@@ -251,7 +272,7 @@ index a0bd279..8c9ec53 100644
      );
  
      // Construct the source and destination objects.
-@@ -41,19 +44,18 @@ class WordPressTag extends WordPressMigration {
+@@ -41,19 +44,21 @@ class WordPressTag extends WordPressMigration {
        'reader_class' => 'MigrateXMLReader',
        'cache_counts' => TRUE,
      );
@@ -276,10 +297,13 @@ index a0bd279..8c9ec53 100644
           ->callbacks('html_entity_decode');
 -    $this->addFieldMapping('parent_name')
 -         ->issueGroup('DNM');
++
++    $this->addFieldMapping('language')
++      ->defaultValue('en');
  
      // Unmapped destination fields
      $this->addFieldMapping('parent');
-@@ -61,4 +63,20 @@ class WordPressTag extends WordPressMigration {
+@@ -61,4 +66,20 @@ class WordPressTag extends WordPressMigration {
      $this->addFieldMapping('weight');
      $this->addFieldMapping('path');
    }
