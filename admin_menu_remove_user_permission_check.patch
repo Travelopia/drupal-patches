@@ -1,0 +1,14 @@
+diff --git a/admin_menu.map.inc b/admin_menu.map.inc
+index 8b7ae13..0da7771 100644
+--- a/admin_menu.map.inc
++++ b/admin_menu.map.inc
+@@ -28,9 +28,6 @@ function filter_admin_menu_map() {
+  * Implements hook_admin_menu_map() on behalf of Menu module.
+  */
+ function menu_admin_menu_map() {
+-  if (!user_access('administer menu')) {
+-    return;
+-  }
+   $map['admin/structure/menu/manage/%menu'] = array(
+     'parent' => 'admin/structure/menu',
+     'arguments' => array(
