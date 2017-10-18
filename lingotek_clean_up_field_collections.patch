@@ -1,0 +1,123 @@
+diff --git a/lingotek.batch.inc b/lingotek.batch.inc
+index 8781485..41621eb 100644
+--- a/lingotek.batch.inc
++++ b/lingotek.batch.inc
+@@ -156,6 +156,25 @@ function lingotek_get_sync_upload_batch_elements($entity_type, $upload_nids = ar
+ }
+ 
+ /**
++ * Gets operations for cleaning up field collection fields (adds a "und" row)
++ */
++function lingotek_get_field_collection_field_operations() {
++  $operations = array();
++  $translatable_fields = lingotek_translatable_fields();
++  $item_ids = db_select('field_collection_item', 'fci')
++    ->fields('fci', array('item_id'))
++    ->execute()
++    ->fetchAllAssoc('item_id');
++
++  $fc_ids = array_keys($item_ids);
++  $the_count = count($fc_ids);
++  foreach($fc_ids as $entity_id) {
++    $operations[] = array('lingotek_clean_field_collection_fields', array($entity_id));
++  }
++  return $operations;
++}
++
++/**
+  * Update marked entities:  Creates the batch elements for marked entities.
+  */
+ function lingotek_get_marked_batch_elements($entity_type, $entity_ids = array()) {
+@@ -335,6 +354,20 @@ function lingotek_sync_upload_config_finished($success, $results, $operations) {
+   lingotek_sync_upload_node_finished($success, $results, $operations, TRUE);
+ }
+ 
++function lingotek_clean_field_collection_fields_finished($success, $results) {
++  $message = format_plural($results['fc_fields_cleaned'], t('1 field collection field has been cleaned.'), t('@num field collection fields have been cleaned.', array('@num' => (int) $results['fc_fields_cleaned'])));
++  if ((int) $results['fc_fields_cleaned'] == 0) {
++    $message = 'All field collection fields already have a language neutral value.';
++  }
++  if ($success) {
++    drupal_set_message(filter_xss($message), 'status');
++  }
++  else {
++    $message = format_plural($results['fc_fields_cleaned'], t('Cleaning 1 field collection field has failed.'), t('Cleaning @num field collection fields failed.', array('@num' => (int) $results['fc_fields_cleaned'])));
++    drupal_set_message(filter_xss($message), 'error');
++  }
++}
++
+ function lingotek_update_marked_items_finished($success, $results) {
+   if (isset($results['entity_type']) && $results['entity_type'] === 'config') {
+     $message = format_plural($results['marked'], t('1 config item has been marked.'), t('@num config items have been marked.', array('@num' => (int) $results['marked'])));
+diff --git a/lingotek.util.inc b/lingotek.util.inc
+index aeafc41..a6734be 100755
+--- a/lingotek.util.inc
++++ b/lingotek.util.inc
+@@ -1782,7 +1782,6 @@ function lingotek_get_all_entities_by_profile($profile_id) {
+  */
+ function lingotek_cleanup_field_collection_fields() {
+   // todo: This function is MySQL-specific.  Needs refactoring to be db-agnostic.
+-
+   $field_collection_field_types = field_read_fields(array('type' => 'field_collection'));
+   $disabled_types = lingotek_get_disabled_bundles('field_collection_item');
+ 
+@@ -1832,6 +1831,59 @@ function lingotek_cleanup_field_collection_fields() {
+   if (!$fc_fields_found && !$fc_dups_found) {
+     drupal_set_message(t('All field-collection entries were already correctly set to be language neutral.'));
+   }
++
++  $operations = lingotek_get_field_collection_field_operations();
++
++  $batch = array(
++    'title' => t('Lingotek Field Collection Field Updater'),
++    'operations' => $operations,
++    'finished' => 'lingotek_clean_field_collection_fields_finished',
++    'file' => 'lingotek.batch.inc'
++  );
++
++  $redirect = current_path();
++  batch_set($batch);
++  batch_process($redirect);
++}
++
++function lingotek_clean_field_collection_fields($entity_id, &$context) {
++  $translatable_fields = lingotek_translatable_fields();
++  try {
++    $entity = lingotek_entity_load_single('field_collection_item', $entity_id);
++  }
++  catch(Exception $e) {
++    return;
++  }
++  if (is_null($entity)) {
++    return;
++  }
++  $hostEntityId = $entity->hostEntityId();
++  if (is_null($hostEntityId)) {
++    return;
++  }
++  foreach($translatable_fields as $field_name) {
++    if (!isset($entity->{$field_name})) {
++      continue;
++    }
++    if (!isset($entity->{$field_name}[LANGUAGE_NONE]) && isset($entity->{$field_name}[language_default()->language])) {
++      $entity->{$field_name}[LANGUAGE_NONE] = $entity->{$field_name}[language_default()->language];
++      $edited = TRUE;
++    }
++  }
++  if ($edited) {
++    try {
++      entity_save('field_collection_item', $entity);
++      if(empty($context['results'])) {
++        $context['results']['fc_fields_cleaned'] = 1;
++      }
++      else {
++        $context['results']['fc_fields_cleaned'] += 1;
++      }
++    }
++    catch (Exception $e) {
++      return;
++    }
++  }
+ }
+ 
+ function lingotek_cleanup_get_dirty_field_collection_fields($field_collection_table) {
