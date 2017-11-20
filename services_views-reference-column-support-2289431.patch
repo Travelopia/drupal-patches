@@ -1,0 +1,18 @@
+diff --git a/services_views.module b/services_views.module
+index e245cce..402d25b 100755
+--- a/services_views.module
++++ b/services_views.module
+@@ -357,7 +357,12 @@ function services_views_field_formatter_view($entity_type, $entity, $field, $ins
+           $key = count($filtered_item);
+         }
+
+-        $filtered_item[$key] = $val;
++        if (!is_array($val)) {
++          $filtered_item[$key] = array(
++            '#type' => 'markup',
++            '#markup' => $val,
++          );
++        }
+       }
+
+       $element[$delta] = $filtered_item;
