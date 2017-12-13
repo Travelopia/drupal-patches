@@ -1,0 +1,20 @@
+diff --git a/lingotek.module b/lingotek.module
+index cf5c4e9..48f8ba8 100755
+--- a/lingotek.module
++++ b/lingotek.module
+@@ -2205,6 +2205,15 @@ function lingotek_get_host_language($entity_type, $entity, $read_only = TRUE) {
+ }
+ 
+ function lingotek_normalize_special_field_language($entity_type, $entity, $read_only = TRUE) {
++  // If entity translation supports field collections (since 7.x-1.0-beta12),
++  // Lingotek normalization is not necessary because entity translation will
++  // deliver the correct translations.
++  if (module_exists('entity_translation')) {
++    $enabled_types = array_filter(variable_get('entity_translation_entity_types', array()));
++    if (isset($enabled_types['field_collection_item'])) {
++      return;
++    }
++  }
+   $host_language = lingotek_get_host_language($entity_type, $entity, $read_only);
+   $excluded_fields = &drupal_static(__FUNCTION__);
+   if (!isset($excluded_fields)) {
