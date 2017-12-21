@@ -1,0 +1,128 @@
+diff --git a/shield.module b/shield.module
+index ae5b5cd..e259e79 100644
+--- a/shield.module
++++ b/shield.module
+@@ -58,6 +58,11 @@ function shield_set_status($status = NULL) {
+   if (isset($status)) {
+     $stored_status = $status;
+   }
++  
++  // If we use Variable Translation, we need the language set here.
++  if (drupal_multilingual()) {
++    _shield_language_initialize();
++  }
+ 
+   // Force shield to be disabled in the following cases:
+   // - there are no shield credentials set
+@@ -91,11 +96,9 @@ function shield_set_status($status = NULL) {
+ 
+   // Compare paths, if any have been set.
+   if (!empty($paths)) {
+-    require_once DRUPAL_ROOT . '/includes/unicode.inc';
+-    require_once DRUPAL_ROOT . '/' . variable_get('path_inc', 'includes/path.inc');
+-    require_once DRUPAL_ROOT . '/includes/locale.inc';
+-    require_once DRUPAL_ROOT . '/includes/language.inc';
+-    drupal_language_initialize();
++    // Initialise languages if needed.
++    _shield_language_initialize();
++
+     $pages = drupal_strtolower($paths);
+     $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+ 
+@@ -217,3 +220,19 @@ function shield_boost_is_cacheable($parts, $request_type = 'normal') {
+   }
+   return $parts;
+ }
++
++/**
++ *  Initialize Drupal's language system.
++ */
++function _shield_language_initialize() {
++  global $language;
++  
++  require_once DRUPAL_ROOT . '/includes/unicode.inc';
++  require_once DRUPAL_ROOT . '/' . variable_get('path_inc', 'includes/path.inc');
++  require_once DRUPAL_ROOT . '/includes/locale.inc';
++  require_once DRUPAL_ROOT . '/includes/language.inc';
++  
++  if (!isset($language)) {
++    drupal_language_initialize();
++  }
++}
+diff --git a/shield.variable.inc b/shield.variable.inc
+index d9aaa91..7cda4ea 100644
+--- a/shield.variable.inc
++++ b/shield.variable.inc
+@@ -26,6 +26,7 @@ function shield_variable_info($options) {
+     'title' => t('Enable shield module', array(), $options),
+     'type' => 'boolean',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
+@@ -35,6 +36,7 @@ function shield_variable_info($options) {
+     'description' => t('When the site is accessed from command line (e.g. from Drush, cron), the shield should not work.', array(), $options),
+     'type' => 'boolean',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
+@@ -43,7 +45,8 @@ function shield_variable_info($options) {
+     'title' => t('Ignored addresses', array(), $options),
+     'description' => t('Enter a list of IP addresses to ignore; one per line. Any requests from these addresses will be allowed. Leave blank to require authentication for all addresses.', array(), $options),
+     'type' => 'text',
+-    'group' => 'shield'
++    'group' => 'shield',
++    'localize' => TRUE,
+   );
+   $variable['shield_remote_address'] = array(
+     'title' => t('Remote address key', array(), $options),
+@@ -51,6 +54,7 @@ function shield_variable_info($options) {
+     'type' => 'string',
+     'default' => 'REMOTE_ADDR',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
+@@ -62,6 +66,7 @@ function shield_variable_info($options) {
+     'options' => array(1 => t('Shield all except the following paths (exclude)'), 2 => t('Shield no paths except the following (include)')),
+     'default' => 1,
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+   $variable['shield_paths'] = array(
+@@ -69,6 +74,7 @@ function shield_variable_info($options) {
+     'description' => t('According to the Shield method selected above, these paths will be either excluded from, or included in Shield protection. Leave this blank and select "exclude" to protect all paths. You can also use paths which do not hit index.php but bootstrapped, for example cron.php.', array(), $options),
+     'type' => 'text',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
+@@ -78,12 +84,14 @@ function shield_variable_info($options) {
+     'description' => t('Leave it blank to disable authentication.', array(), $options),
+     'type' => 'string',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+   $variable['shield_pass'] = array(
+     'title' => t('Password', array(), $options),
+     'type' => 'string',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
+@@ -92,6 +100,7 @@ function shield_variable_info($options) {
+     'description' => t("The message to print in the authentication request popup. You can use [user] and [pass] to print the user and the password respectively (for example: 'Hello, user: [user], pass: [pass]!'). You can leave it empty, if you don't want to print out any special message to the users.", array(), $options),
+     'type' => 'string',
+     'group' => 'shield',
++    'localize' => TRUE,
+     'multidomain' => TRUE,
+   );
+ 
