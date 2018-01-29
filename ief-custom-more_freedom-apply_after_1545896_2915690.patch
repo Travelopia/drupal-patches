@@ -1,0 +1,46 @@
+diff --git a/includes/entity.inline_entity_form.inc b/includes/entity.inline_entity_form.inc
+index 6536630..575a253 100644
+--- a/includes/entity.inline_entity_form.inc
++++ b/includes/entity.inline_entity_form.inc
+@@ -143,6 +143,7 @@ class EntityInlineEntityFormController {
+     $defaults = array();
+     $defaults['allow_new'] = TRUE;
+     $defaults['allow_existing'] = FALSE;
++    $defaults['disallow_edit'] = FALSE;
+     $defaults['match_operator'] = 'CONTAINS';
+     $defaults['allow_clone'] = FALSE;
+     $defaults['delete_references'] = FALSE;
+@@ -180,6 +181,11 @@ class EntityInlineEntityFormController {
+       '#title' => t('Allow users to add existing @label.', array('@label' => $labels['plural'])),
+       '#default_value' => $this->settings['allow_existing'],
+     );
++    $form['disallow_edit'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Disallow users to edit existing @label.', array('@label' => $labels['plural'])),
++      '#default_value' => $this->settings['disallow_edit'],
++    );
+     $form['match_operator'] = array(
+       '#type' => 'select',
+       '#title' => t('Autocomplete matching'),
+diff --git a/inline_entity_form.module b/inline_entity_form.module
+index 5741147..a00785f 100644
+--- a/inline_entity_form.module
++++ b/inline_entity_form.module
+@@ -695,7 +695,7 @@ function inline_entity_form_field_widget_form(&$form, &$form_state, $field, $ins
+ 
+         // Make sure entity_access is not checked for unsaved entities.
+         list($entity_id) = entity_extract_ids($controller->entityType(), $entity);
+-        if (empty($entity_id) || entity_access('update', $controller->entityType(), $entity)) {
++        if (empty($controller->getSetting('disallow_edit')) && (empty($entity_id) || entity_access('update', $controller->entityType(), $entity))) {
+           $row['actions']['ief_entity_edit'] = array(
+             '#type' => 'submit',
+             '#value' => $is_translation ? t('Edit translation') : ($parent_is_translation ? t('Add translation') : t('Edit')),
+@@ -821,7 +821,7 @@ function inline_entity_form_field_widget_form(&$form, &$form_state, $field, $ins
+       );
+ 
+       // The user is allowed to create an entity of at least one bundle.
+-      if (count($settings['create_bundles']) && !$parent_is_translation) {
++      if (count($settings['create_bundles'])) {
+         // Let the user select the bundle, if multiple are available.
+         if (count($settings['create_bundles']) > 1) {
+           $bundles = array();
