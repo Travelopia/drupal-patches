@@ -7,7 +7,7 @@ index a534eb3..e9967e5 100755
          $output[$index]->$target_key = array();
          if($field->field_info['cardinality'] == 1)
 -          $output[$index]->$target_key = '';
-+          $output[$index]->$target_key[] = '';
++          $output[$index]->$target_key = array();
          $obj = &$output[$index]->$target_key;
          $format = ($field->options['type'] == 'services') ? 'raw' : 'rendered';
 
