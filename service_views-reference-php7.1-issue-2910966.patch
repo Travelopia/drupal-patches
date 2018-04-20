@@ -1,5 +1,5 @@
 diff --git a/services_views.resource.inc b/services_views.resource.inc
-index a534eb3..e9967e5 100755
+index a534eb3..7743b1f 100755
 --- a/services_views.resource.inc
 +++ b/services_views.resource.inc
 @@ -169,7 +169,7 @@ function services_views_execute_view($view_info, $view = NULL, $display_id = NUL
@@ -10,4 +10,4 @@ index a534eb3..e9967e5 100755
 +          $output[$index]->$target_key = array();
          $obj = &$output[$index]->$target_key;
          $format = ($field->options['type'] == 'services') ? 'raw' : 'rendered';
-
+ 
