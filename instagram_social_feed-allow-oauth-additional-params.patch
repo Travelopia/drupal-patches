@@ -1,0 +1,16 @@
+Index: instagram_social_feed.pages.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- instagram_social_feed.pages.inc	(revision )
++++ instagram_social_feed.pages.inc	(revision )
+@@ -175,7 +175,7 @@
+     if (variable_get('instagram_social_feed_client_id', '') != '' && variable_get('instagram_social_feed_redirect_uri', '') != '') {
+       $form['authenticate'] = array(
+         '#markup' => l(t('Click here to authenticate via Instagram and create an access token'),
+-          'https://api.instagram.com/oauth/authorize/?client_id=' . variable_get('instagram_social_feed_client_id') . '&redirect_uri=' . variable_get('instagram_social_feed_redirect_uri') . '&response_type=code'
++          'https://api.instagram.com/oauth/authorize/?client_id=' . variable_get('instagram_social_feed_client_id') . '&redirect_uri=' . variable_get('instagram_social_feed_redirect_uri') . '&response_type=code' . variable_get('instagram_social_feed_additional_auth_params', '')
+         )
+       );
+     }

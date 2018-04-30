@@ -1,0 +1,17 @@
+diff --git a/hybridauth.make b/hybridauth.make
+deleted file mode 100644
+index 3ed545d..0000000
+--- a/hybridauth.make
++++ /dev/null
+@@ -1,9 +0,0 @@
+-; Download HybridAuth library.
+-core = 7.x
+-api = 2
+-
+-libraries[hybridauth][type] = "libraries"
+-libraries[hybridauth][download][type] = "file"
+-libraries[hybridauth][download][url] = "https://github.com/hybridauth/hybridauth/archive/2.5.1.zip"
+-libraries[hybridauth][directory_name] = "hybridauth"
+-libraries[hybridauth][destination] = "libraries"
+
+
