@@ -1,0 +1,27 @@
+From c66a0c1ab6898b353d9f02105fc1e48624eaf9e3 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Wed, 9 May 2018 10:39:38 +0100
+Subject: [PATCH] [STI-113] Add additional patch for entityreference
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index be5037d7b..87c0f1597 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -106,6 +106,13 @@ projects[facetapi][download][revision] = 9c8713fe075f60b5e85a08be11b44b7399c620e
+ projects[media][version] = 2.19
+ projects[media][subdir] = contrib
+ 
++; Panopoly 1.49 - Add additional patch
++; Entity Reference
++projects[entityreference][version] = 1.5
++projects[entityreference][subdir] = contrib
++; This patch bring in an update hook. Please check it before updating the module version
++projects[entityreference][patch][1368386] = https://www.drupal.org/files/issues/entityreference-1368386-100.patch
++
+ ; Panopoly Additions
+ ; These modules are not yet in Panopoly, but directly relate to and extend
+ ; its module set.
