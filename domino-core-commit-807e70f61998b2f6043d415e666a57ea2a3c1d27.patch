@@ -1,0 +1,25 @@
+From 807e70f61998b2f6043d415e666a57ea2a3c1d27 Mon Sep 17 00:00:00 2001
+From: James Rogers <james.rogers@sesdev.io>
+Date: Wed, 23 May 2018 11:03:19 +0100
+Subject: [PATCH] [STI-104] Allow booking emails to be disabled.
+
+---
+ modules/custom/d2_features/d2_email/d2_email.module | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/modules/custom/d2_features/d2_email/d2_email.module b/modules/custom/d2_features/d2_email/d2_email.module
+index 55b27955..e8732214 100644
+--- a/modules/custom/d2_features/d2_email/d2_email.module
++++ b/modules/custom/d2_features/d2_email/d2_email.module
+@@ -13,6 +13,8 @@ function d2_email_commerce_checkout_complete($order) {
+   if (
+     variable_get('site_name', FALSE)
+     && variable_get('site_mail', FALSE)
++    // Allow emails to be disabled.
++    && variable_get('d2_email_send_on_checkout_complete', TRUE)
+     // Allows us to skip sending emails when some hooks are fired. Ideally, we'll replace this method by a rule.
+     && !drupal_static('d2_email_skip', FALSE)
+   ) {
+-- 
+2.16.2
+
