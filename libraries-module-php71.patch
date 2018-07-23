@@ -1,0 +1,25 @@
+From 6a3b09dce11e17e3817b11259efc60115f1fe715 Mon Sep 17 00:00:00 2001
+From: Nav <navdeep.playa@thlmarine.com>
+Date: Mon, 23 Jul 2018 16:09:56 +0100
+Subject: [PATCH] Patch for fixing the warning messages because of php 7.1
+
+---
+ modules/custom/libraries.module | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/custom/libraries.module b/modules/custom/libraries.module
+index 7fe2f3b5..59cf8448 100644
+--- a/modules/custom/libraries.module
++++ b/modules/custom/libraries.module
+@@ -556,7 +556,7 @@ function libraries_detect($name = NULL) {
+       $library['version'] = call_user_func_array($library['version callback'], array_merge(array($library), $library['version arguments']));
+     }
+     else {
+-      $library['version'] = call_user_func($library['version callback'], $library, $library['version arguments']);
++      $library['version'] = call_user_func_array($library['version callback'], array(&$library, $library['version arguments']));
+     }
+     if (empty($library['version'])) {
+       $library['error'] = 'not detected';
+-- 
+2.17.1
+
