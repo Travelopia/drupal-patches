@@ -1,0 +1,38 @@
+From 0a1fa6068ab0d8c18eec113010e86118ee66c8e2 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Fri, 27 Jul 2018 12:18:05 +0100
+Subject: [PATCH] [TREK-616] Security updates
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index be5037d7b..b9ce1ded4 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -59,9 +59,10 @@ projects[defaultconfig][patch][1900574] = https://www.drupal.org/files/1900574.d
+ ; Patched to resolve "Undefined index: default_filename"
+ projects[defaultconfig][patch][2008178] = https://www.drupal.org/files/issues/defaultconfig-rebuild-2008178-14.patch
+ 
+-; Panopoly 1.49 - Upgrade UUID to resolve Notice: Undefined index: uuid in entity_get_uuid_by_id
++; Panopoly 1.49 - Bump up to version 1.1
++; Brings in security updates.
+ ; Included by http://cgit.drupalcode.org/panopoly_core/tree/panopoly_core.make
+-projects[uuid][version] = 1.0-beta1
++projects[uuid][version] = 1.1
+ projects[uuid][subdir] = contrib
+ 
+ ; Panopoly 1.49 - Patched 2.2 with D.O #2823467 "Notice: Undefined index: path
+@@ -106,6 +107,11 @@ projects[facetapi][download][revision] = 9c8713fe075f60b5e85a08be11b44b7399c620e
+ projects[media][version] = 2.19
+ projects[media][subdir] = contrib
+ 
++; Panopoly 1.49 - Bump up to version 2.4
++; Brings in security updates.
++projects[xmlsitemap][version] = 2.4
++projects[xmlsitemap][subdir] = contrib
++
+ ; Panopoly Additions
+ ; These modules are not yet in Panopoly, but directly relate to and extend
+ ; its module set.
