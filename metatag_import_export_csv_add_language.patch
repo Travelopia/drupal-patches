@@ -1,0 +1,20 @@
+diff --git a/modules/contrib/metatag_import_export_csv/metatag_import_export_csv_download_admin.inc b/modules/contrib/metatag_import_export_csv/metatag_import_export_csv_download_admin.inc
+index eef61154..773b51e7 100644
+--- a/modules/contrib/metatag_import_export_csv/metatag_import_export_csv_download_admin.inc
++++ b/modules/contrib/metatag_import_export_csv/metatag_import_export_csv_download_admin.inc
+@@ -99,6 +99,7 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
+   $header = array(
+     'Node Title',
+     'Path',
++    'Language',
+     ' Meta Title',
+     'Meta Description',
+     'Meta Abstract',
+@@ -118,6 +119,7 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
+       $row = array(
+         $node_title,
+         $path,
++        $node->language,
+         $meta_title,
+         $meta_description,
+         $meta_abstract,
