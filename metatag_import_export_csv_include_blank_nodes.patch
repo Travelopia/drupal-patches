@@ -1,0 +1,38 @@
+diff --git a/metatag_import_export_csv_download_admin.inc b/metatag_import_export_csv_download_admin.inc
+index 773b51e..1523d46 100644
+--- a/metatag_import_export_csv_download_admin.inc
++++ b/metatag_import_export_csv_download_admin.inc
+@@ -34,6 +34,12 @@ function metatag_import_export_csv_download_form($form, &$form_state) {
+     '#default_value' => $content_type['all'],
+     '#description' => t("Select the Content type"),
+   );
++  $form['include_blank'] = array(
++    '#type' => 'checkbox',
++    '#title' => t('Include all nodes'),
++    '#description' => t('Select this option if you want to also export nodes with no metatags.'),
++    '#default_value' => variable_get('metatag_import_export_csv_include_blank', FALSE),
++  );
+   $form['export'] = array(
+     '#type' => 'submit',
+     '#value' => t("Export"),
+@@ -47,6 +53,11 @@ function metatag_import_export_csv_download_form($form, &$form_state) {
+  */
+ function metatag_import_export_csv_download_submit($form, &$form_state) {
+   $type = $form_state['values']['content_type'];
++
++  // Save the value of checkbox
++  $include_blank = $form_state['values']['include_blank'];
++  variable_set('metatag_import_export_csv_include_blank', $include_blank);
++
+   metatag_import_export_csv_download_nid($type);
+ }
+ 
+@@ -115,7 +126,7 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
+     $meta_description = (isset($node->metatags[$node->language]['description']['value']) ? $node->metatags[$node->language]['description']['value'] : "");
+     $meta_abstract = (isset($node->metatags[$node->language]['abstract']['value']) ? $node->metatags[$node->language]['abstract']['value'] : "");
+     $meta_keywords = (isset($node->metatags[$node->language]['keywords']['value']) ? $node->metatags[$node->language]['keywords']['value'] : "");
+-    if (!empty($meta_title) || !empty($meta_description) || !empty($meta_abstract) || !empty($meta_keywords)) {
++    if (variable_get('metatag_import_export_csv_include_blank', FALSE) || !empty($meta_title) || !empty($meta_description) || !empty($meta_abstract) || !empty($meta_keywords)) {
+       $row = array(
+         $node_title,
+         $path,
