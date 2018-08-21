@@ -1,20 +1,30 @@
 diff --git a/metatag_import_export_csv_download_admin.inc b/metatag_import_export_csv_download_admin.inc
-index eef6115..773b51e 100644
+index 1523d46..5d188a9 100644
 --- a/metatag_import_export_csv_download_admin.inc
 +++ b/metatag_import_export_csv_download_admin.inc
-@@ -99,6 +99,7 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
+@@ -110,11 +110,11 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
    $header = array(
      'Node Title',
      'Path',
-+    'Language',
+-    'Language',
      ' Meta Title',
      'Meta Description',
      'Meta Abstract',
-@@ -118,6 +119,7 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
+     ' Meta Keywords',
++    'Language',
+   );
+   fputcsv($fp, $header);
+ 
+@@ -130,11 +130,11 @@ function metatag_import_export_csv_process_csv($nid_list, $type) {
        $row = array(
          $node_title,
          $path,
-+        $node->language,
+-        $node->language,
          $meta_title,
          $meta_description,
          $meta_abstract,
+         $meta_keywords,
++        $node->language,
+       );
+       file_put_contents($file_url, $row, FILE_APPEND);
+       fputcsv($fp, $row);
