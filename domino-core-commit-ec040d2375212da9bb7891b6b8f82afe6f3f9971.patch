@@ -1,0 +1,19 @@
+From ec040d2375212da9bb7891b6b8f82afe6f3f9971 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Tue, 28 Aug 2018 11:42:21 +0100
+Subject: [PATCH] [STI-164] Error messages from
+ date_entity_metadata_struct_getter()
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index be5037d7b..83aac0bc7 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -141,3 +141,4 @@ projects[panels_curator][download][revision] = 	ea415d8e44854ce66fed9bf2d1734c1a
+ projects[date][version] = 2.9
+ projects[date][subdir] = contrib
+ projects[date][patch][2843367] = https://www.drupal.org/files/issues/2843367-php71-string-offset.patch
++projects[date][patch][2074457] = https://www.drupal.org/files/issues/uninitialized_string_offset_in_date_entity_metadata_struct_getter-2074457-9.patch
