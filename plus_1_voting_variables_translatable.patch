@@ -1,0 +1,43 @@
+diff --git a/plus1.module b/plus1.module
+index dd8e3d5..b11dec7 100644
+--- a/plus1.module
++++ b/plus1.module
+@@ -310,9 +310,9 @@ function plus1_build_node_jquery_widget($entity_id, $tag = 'plus1_node_vote') {
+     '#link_query' => array('token' => drupal_get_token($node->nid), plus1_get_cleared_destination()),
+     '#can_vote' => user_access('plus1 vote on node'),
+     '#can_undo_vote' => variable_get('plus1_node_undo_vote', 0),
+-    '#undo_vote_text' => check_plain(variable_get('plus1_node_undo_vote_text', '')),
+-    '#voted_text' => check_plain(variable_get('plus1_node_voted_text', t('You voted'))),
+-    '#vote_text' => check_plain(variable_get('plus1_node_vote_text', t('Vote'))),
++    '#undo_vote_text' => check_plain(t(variable_get('plus1_node_undo_vote_text', ''))),
++    '#voted_text' => check_plain(t(variable_get('plus1_node_voted_text', 'You voted'))),
++    '#vote_text' => check_plain(t(variable_get('plus1_node_vote_text', 'Vote'))),
+   );
+   if (variable_get('plus1_add_js', 1)) {
+     $build['#attached']['js'][] = drupal_get_path('module', 'plus1') . '/jquery.plus1.js';
+@@ -349,9 +349,9 @@ function plus1_build_comment_jquery_widget($entity_id, $tag = 'plus1_comment_vot
+     '#link_query' => array('token' => drupal_get_token($comment->cid), plus1_get_cleared_destination()),
+     '#can_vote' => user_access('plus1 vote on comment'),
+     '#can_undo_vote' => variable_get('plus1_comment_undo_vote', 0),
+-    '#undo_vote_text' => check_plain(variable_get('plus1_comment_undo_vote_text', "")),
+-    '#voted_text' => check_plain(variable_get('plus1_comment_voted_text', t('You voted'))),
+-    '#vote_text' => check_plain(variable_get('plus1_comment_vote_text', t('Vote'))),
++    '#undo_vote_text' => check_plain(t(variable_get('plus1_comment_undo_vote_text', ""))),
++    '#voted_text' => check_plain(t(variable_get('plus1_comment_voted_text', 'You voted'))),
++    '#vote_text' => check_plain(t(variable_get('plus1_comment_vote_text', 'Vote'))),
+   );
+   if (variable_get('plus1_add_js', 1)) {
+     $build['#attached']['js'][] = drupal_get_path('module', 'plus1') . '/jquery.plus1.js';
+@@ -387,9 +387,9 @@ function plus1_build_taxonomy_term_jquery_widget($entity_id, $tag = 'plus1_taxon
+     '#link_query' => array('token' => drupal_get_token($term->tid), plus1_get_cleared_destination()),
+     '#can_vote' => user_access('plus1 vote on taxonomy_term'),
+     '#can_undo_vote' => variable_get('plus1_taxonomy_term_undo_vote', 0),
+-    '#undo_vote_text' => check_plain(variable_get('plus1_taxonomy_term_undo_vote_text', '')),
+-    '#voted_text' => check_plain(variable_get('plus1_taxonomy_term_voted_text', t('You voted'))),
+-    '#vote_text' => check_plain(variable_get('plus1_taxonomy_term_vote_text', t('Vote'))),
++    '#undo_vote_text' => check_plain(t(variable_get('plus1_taxonomy_term_undo_vote_text', ''))),
++    '#voted_text' => check_plain(t(variable_get('plus1_taxonomy_term_voted_text', 'You voted'))),
++    '#vote_text' => check_plain(t(variable_get('plus1_taxonomy_term_vote_text', 'Vote'))),
+   );
+   if (variable_get('plus1_add_js', 1)) {
+     $build['#attached']['js'][] = drupal_get_path('module', 'plus1') . '/jquery.plus1.js';
