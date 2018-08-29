@@ -1,0 +1,23 @@
+From 55bf598f2044cf565e43407c56b0052ff769c21d Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Wed, 29 Aug 2018 08:43:10 +0100
+Subject: [PATCH] [STI-164] Bump date to 2.10 (resolves issues with entity
+ metadata wrappers)
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index 83aac0bc7..e6298f8b7 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -138,7 +138,7 @@ projects[panels_curator][download][branch] = 7.x-1.x
+ projects[panels_curator][download][revision] = 	ea415d8e44854ce66fed9bf2d1734c1ae39426c4
+ 
+ ; Patch Date Module for PHP 7.1.
+-projects[date][version] = 2.9
++projects[date][version] = 2.10
+ projects[date][subdir] = contrib
+ projects[date][patch][2843367] = https://www.drupal.org/files/issues/2843367-php71-string-offset.patch
+ projects[date][patch][2074457] = https://www.drupal.org/files/issues/uninitialized_string_offset_in_date_entity_metadata_struct_getter-2074457-9.patch
