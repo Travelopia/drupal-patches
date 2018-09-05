@@ -1,0 +1,25 @@
+From 276d3c49fc1f3650c9b27298d4b5cd3bd24f096d Mon Sep 17 00:00:00 2001
+From: James Rogers <james.rogers@sesdev.io>
+Date: Wed, 5 Sep 2018 12:35:45 +0100
+Subject: [PATCH] [STI-104] Resolve notice on checkout complete page.
+
+---
+ modules/custom/d2_features/d2_email/d2_email.module | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/custom/d2_features/d2_email/d2_email.module b/modules/custom/d2_features/d2_email/d2_email.module
+index e8732214..128ee771 100644
+--- a/modules/custom/d2_features/d2_email/d2_email.module
++++ b/modules/custom/d2_features/d2_email/d2_email.module
+@@ -136,7 +136,7 @@ function d2_email_mail_post_process(&$message, $key) {
+ function d2_email_form_commerce_checkout_form_alter($form, &$form_state, $form_id) {
+     $order = $form_state['order'];
+     if(strtolower($form_state['checkout_page']['name']) =='complete'){
+-        if($order->data['checkout_complete_invoked'] != TRUE){
++        if(variable_get('d2_email_send_on_checkout_complete', TRUE) && $order->data['checkout_complete_invoked'] != TRUE){
+             rules_invoke_all('commerce_checkout_complete', $order);
+         }
+     }
+--
+2.17.1
+
