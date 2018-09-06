@@ -1,0 +1,25 @@
+From cd4771e6e477cd7fcebdbb377bed49786d06447b Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Thu, 6 Sep 2018 10:18:36 +0100
+Subject: [PATCH] [TREK-629] xmlsitemap security updates
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index c43e4d6bc..b9ce1ded4 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -107,6 +107,11 @@ projects[facetapi][download][revision] = 9c8713fe075f60b5e85a08be11b44b7399c620e
+ projects[media][version] = 2.19
+ projects[media][subdir] = contrib
+ 
++; Panopoly 1.49 - Bump up to version 2.4
++; Brings in security updates.
++projects[xmlsitemap][version] = 2.4
++projects[xmlsitemap][subdir] = contrib
++
+ ; Panopoly Additions
+ ; These modules are not yet in Panopoly, but directly relate to and extend
+ ; its module set.
