@@ -1,0 +1,25 @@
+From 3c9143dde6020821fec92d6f24f3a29f7e1d6138 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Thu, 6 Sep 2018 10:19:45 +0100
+Subject: [PATCH] [TREK-629] xmlsitemap bug fixed from 2.4
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index b9ce1ded4..bf5f1b80d 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -107,9 +107,9 @@ projects[facetapi][download][revision] = 9c8713fe075f60b5e85a08be11b44b7399c620e
+ projects[media][version] = 2.19
+ projects[media][subdir] = contrib
+ 
+-; Panopoly 1.49 - Bump up to version 2.4
++; Panopoly 1.49 - Bump up to version 2.5
+ ; Brings in security updates.
+-projects[xmlsitemap][version] = 2.4
++projects[xmlsitemap][version] = 2.5
+ projects[xmlsitemap][subdir] = contrib
+ 
+ ; Panopoly Additions
