@@ -1,0 +1,27 @@
+From bb6c14e5a4f70157fc107811baaa9f9d0a71adcc Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Thu, 6 Sep 2018 10:40:47 +0100
+Subject: [PATCH] [TREK-617] Add additional patch for entityreference
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index bf5f1b80d..0c70cd25b 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -112,6 +112,13 @@ projects[media][subdir] = contrib
+ projects[xmlsitemap][version] = 2.5
+ projects[xmlsitemap][subdir] = contrib
+ 
++; Panopoly 1.49 - Add additional patch
++; Entity Reference
++projects[entityreference][version] = 1.5
++projects[entityreference][subdir] = contrib
++; This patch bring in an update hook. Please check it before updating the module version
++projects[entityreference][patch][1368386] = https://www.drupal.org/files/issues/entityreference-1368386-100.patch
++
+ ; Panopoly Additions
+ ; These modules are not yet in Panopoly, but directly relate to and extend
+ ; its module set.
