@@ -41,7 +41,10 @@ index 068c00a..de83aa5 100644
 +
 +        // Remove this and the Postcode Finder as the customer has opted to enter manually
 +        $(this).remove();
-+        $("#postcodeanywhere-lookup-button").addClass('hidden');
++        if ($('#postcodeanywhere-address-list').length) {
++          $('#postcodeanywhere-address-list').hide()
++          $('.postcodeanywhere-lookup .select2-container').hide()
++        }
 +
 +      });
 +
@@ -52,8 +55,23 @@ index 068c00a..de83aa5 100644
    Drupal.behaviors.postCodeAnywhere = {
      attach: function () {
 +
++      // Query taken from H&J breakpoints.
++      var smMax = "only screen and (max-width: 479px)";
++
 +      // Call the init function on load, do not re-call every time Drupal.behaviours is called.
 +      init();
++
++      // Hayes & Jarvis specific query to style select box accordingly.
++      if (window.matchMedia(smMax).matches) {
++        $('#postcodeanywhere-address-list').addClass("single-select");
++        // Wait for the element to "exist" before hiding it.
++        var checkExist = setInterval(function() {
++          if ($('.postcodeanywhere-lookup .select2-container').length) {
++            $('.postcodeanywhere-lookup .select2-container').hide();
++            clearInterval(checkExist);
++          }
++        }, 100);
++      }
            
        // Only apply if postcodeanywhere wrapper is present.
        if ($(Drupal.settings.postcodeanywhere.id_wrapper)){
@@ -64,7 +82,7 @@ index 068c00a..de83aa5 100644
                $(Drupal.settings.postcodeanywhere.id_company_wrapper).hide();
              $(Drupal.settings.postcodeanywhere.id_line1_wrapper).hide();
              $(Drupal.settings.postcodeanywhere.id_line2_wrapper).hide();
-@@ -16,19 +63,6 @@
+@@ -16,19 +81,6 @@
              $(Drupal.settings.postcodeanywhere.id_county_wrapper).hide();
          }
          
@@ -84,7 +102,7 @@ index 068c00a..de83aa5 100644
          // Add loading spinner div to end of postcode anywhere.
          $('#postcodeloading')
              .hide()  // hide it initially
-@@ -51,12 +85,12 @@
+@@ -51,15 +103,15 @@
                  var html = '';
                  if(data != null){
                    if(data['error'] != null){
@@ -101,19 +119,28 @@ index 068c00a..de83aa5 100644
 +                    $(Drupal.settings.postcodeanywhere.id_town_wrapper).slideDown('slow');
 +                    $(Drupal.settings.postcodeanywhere.id_county_wrapper).slideDown('slow');
                      alert(Drupal.t("Sorry there was an issue with the postcode lookup functionality, please enter address manually."));
-                 // @todo This needs to allow the user to manually enter a postcode still.
-                     $(Drupal.settings.postcodeanywhere.id_wrapper).hide()
-@@ -67,7 +101,8 @@
+-                // @todo This needs to allow the user to manually enter a postcode still.
+-                    $(Drupal.settings.postcodeanywhere.id_wrapper).hide()
++                    // @todo This needs to allow the user to manually enter a postcode still.
++                    $(Drupal.settings.postcodeanywhere.id_wrapper).hide()    
+                   }
+                   else{
+                     var len = data.length;
+@@ -67,7 +119,12 @@
                          html += '<option value="' + data[i].Id + '">' + data[i].StreetAddress + ', ' + data[i].Place + '</option>';
                      }
                      $('#postcodeanywhere-address-list').html(html);
 -                    $('#postcodeanywhere-address-list').slideDown();
 +                    $('#postcodeanywhere-address-list').slideDown('slow');
 +                    $('#postcodeanywhere-address-list').css("overflow", "visible !important");
++                    // Hayes & Jarvis specific query to style select box accordingly.
++                    if (window.matchMedia(smMax).matches) {
++                      $('.postcodeanywhere-lookup .select2-container').slideDown('slow');
++                    }
                      // $('#postcodeanywhere-address-list').show('slow');
                    }
                  }
-@@ -84,13 +119,13 @@
+@@ -84,13 +141,13 @@
  
            $.getJSON(Drupal.settings.basePath+"postcodeanywhere/retrievebyid/"+$('#postcodeanywhere-address-list').val(), function(data){
                  // Set the Values
@@ -134,3 +161,16 @@ index 068c00a..de83aa5 100644
            });
            
          // Show the Wrappers.
+@@ -103,6 +160,7 @@
+           
+           // Hide the list
+           $('#postcodeanywhere-address-list').hide();
++          $('#postcode-manual-entry').hide();
+         });
+         
+         // If we choose a non uk option hide postcode lookup.
+@@ -124,4 +182,3 @@
+     }
+   };
+ }(jQuery));
+-
