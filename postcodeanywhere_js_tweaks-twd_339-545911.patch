@@ -1,8 +1,8 @@
 diff --git a/postcodeanywhere.js b/postcodeanywhere.js
-index 068c00a..de83aa5 100644
+index 068c00a..cfaae5e9 100644
 --- a/postcodeanywhere.js
 +++ b/postcodeanywhere.js
-@@ -1,13 +1,60 @@
+@@ -1,13 +1,78 @@
  (function ($) {
 +  
 +  var initialized;
