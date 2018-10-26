@@ -66,10 +66,10 @@ index 3be653ab..39587a8f 100644
  
    $id = strtr(drupal_strtolower($id), array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
  
-diff --git a/mics/ajax.js b/mics/ajax.js
+diff --git a/misc/ajax.js b/misc/ajax.js
 index dd06575d..f4a2e555 100644
---- a/mics/ajax.js
-+++ b/mics/ajax.js
+--- a/misc/ajax.js
++++ b/misc/ajax.js
 @@ -320,9 +320,16 @@ Drupal.ajax.prototype.beforeSerialize = function (element, options) {
  
    // Prevent duplicate HTML ids in the returned markup.
