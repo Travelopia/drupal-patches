@@ -1,0 +1,26 @@
+diff --git a/components/date.inc b/components/date.inc
+index 23a9648e..a6d50663 100644
+--- a/components/date.inc
++++ b/components/date.inc
+@@ -420,7 +420,10 @@ function webform_validate_date($element, $form_state) {
+   if (isset($field_found)) {
+     // Check that each part of the date has been filled in.
+     foreach ($field_types as $field_type) {
+-      if (empty($element[$field_type]['#value'])) {
++      if (($field_type == 'day' && empty($field_type)) && ($field_type == 'month' && !empty($field_type)) && ($field_type == 'year' && !empty($field_type))) {
++        $missing_fields = FALSE;
++      }
++      elseif ($field_type !== 'day' && empty($element[$field_type]['#value'])) {
+         form_error($element[$field_type], t('!part in !name is missing.', array('!name' => $element['#title'], '!part' => $element[$field_type]['#title'])));
+         $missing_fields = TRUE;
+       }
+@@ -431,6 +434,9 @@ function webform_validate_date($element, $form_state) {
+ 
+     // Ensure date is made up of integers.
+     foreach (array('year', 'month', 'day') as $date_part) {
++      if ($element[$date_part]['#value'] == 0) {
++        $element[$date_part]['#value'] = 1;
++      }
+       $element[$date_part]['#value'] = (int) $element[$date_part]['#value'];
+     }
+ 
