@@ -11,7 +11,7 @@ index eb1d1d8..e566f27 100644
 +  if (isset($attributes['src'])) {
 +    unset($attributes['src']);
 +  }
-+  return '<img ' . drupal_attributes($attributes) . ' data-src="'.$data_src.'" class="lazyload" />';
++  return '<img ' . drupal_attributes($attributes) . ' data-src="'.$data_src.'" class="customLazyload" />';
  }
  
  /**
@@ -23,7 +23,7 @@ index eb1d1d8..e566f27 100644
 +  $data_src = $attributes['srcset'];
 +  unset($attributes['srcset']);
 +
-+  return '<source' . drupal_attributes($attributes) . ' class="lazyload" data-src="' . $data_src . '"/>';
++  return '<source' . drupal_attributes($attributes) . ' class="customLazyload" data-src="' . $data_src . '"/>';
  }
  
  /**
