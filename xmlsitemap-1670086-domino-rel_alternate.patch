@@ -36,7 +36,7 @@ index 769987e..5687d97 100644
      '#type' => 'select',
      '#title' => t('Last modification date format'),
 diff --git a/xmlsitemap.generate.inc b/xmlsitemap.generate.inc
-index 848e942..df5b60a 100644
+index 848e942..551d1c5 100644
 --- a/xmlsitemap.generate.inc
 +++ b/xmlsitemap.generate.inc
 @@ -206,10 +206,12 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer,
@@ -64,7 +64,7 @@ index 848e942..df5b60a 100644
      if ($link['lastmod']) {
        if (!empty($output_elements['lastmod'])) {
          $element['lastmod'] = gmdate($lastmod_format, $link['lastmod']);
-@@ -582,3 +589,158 @@ function xmlsitemap_rebuild_clear(array $types, $save_custom) {
+@@ -582,3 +589,166 @@ function xmlsitemap_rebuild_clear(array $types, $save_custom) {
  
    return $query->execute();
  }
@@ -181,6 +181,10 @@ index 848e942..df5b60a 100644
 + */
 +function xmlsitemap_get_entity_translations_with_fallback($sitemap_link, $include_unpub = FALSE, $include_untrans = FALSE) {
 +  module_load_include('inc', 'entity_translation', 'entity_translation.admin');
++  $entity_info = entity_get_info($sitemap_link['type']);
++  if (!isset($entity_info['xmlsitemap'])) {
++    return array();
++  }
 +  $entity = entity_load($sitemap_link['type'], array($sitemap_link['id']));
 +  if (!$entity) {
 +    return array();
@@ -197,6 +201,10 @@ index 848e942..df5b60a 100644
 +
 +  $results = array();
 +  foreach ($all_enabled_languages as $lang_code => $lang_data) {
++    // Skip principal language for this sitemap entry.
++    if ($sitemap_link['language']->language == $lang_code) {
++      continue;
++    }
 +    if (isset($translations->data[$lang_code])) {
 +      // Exclude translations that are not published?
 +      if (!$translations->data[$lang_code]['status'] && !$include_unpub) {
