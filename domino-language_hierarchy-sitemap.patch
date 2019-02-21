@@ -1,0 +1,33 @@
+diff --git a/modules/xmlsitemap_language_hierarchy/xmlsitemap_language_hierarchy.module b/modules/xmlsitemap_language_hierarchy/xmlsitemap_language_hierarchy.module
+index 95b5098..5e869e8 100644
+--- a/modules/xmlsitemap_language_hierarchy/xmlsitemap_language_hierarchy.module
++++ b/modules/xmlsitemap_language_hierarchy/xmlsitemap_language_hierarchy.module
+@@ -173,8 +173,14 @@ function xmlsitemap_language_hierarchy_create_link($node) {
+     }
+ 
+     $xmlsitemap[$language->language] = array();
+-    if ($node->nid && $link = xmlsitemap_link_load('node_translation_' . $language->language, $node->nid)) {
+-      $xmlsitemap[$language->language] = $link;
++    if ($node->nid) {
++      if ($link = xmlsitemap_link_load('node_translation_' . $language->language, $node->nid)) {
++        $xmlsitemap[$language->language] = $link;
++      }
++      // If no existing row for this language, try looking up fallback's exclusion status.
++      elseif (!empty($language_candidate)) {
++        $link = xmlsitemap_link_load('node_translation_' . $language_candidate, $node->nid);
++      }
+     }
+ 
+     $settings = xmlsitemap_link_bundle_load('node', $node->type);
+@@ -184,9 +190,9 @@ function xmlsitemap_language_hierarchy_create_link($node) {
+       'type' => 'node_translation_' . $language->language,
+       'id' => $node->nid,
+       'subtype' => $node->type,
+-      'status' => $settings['status'],
++      'status' => isset($link['status']) ? $link['status'] : $settings['status'],
+       'status_default' => $settings['status'],
+-      'status_override' => 0,
++      'status_override' => isset($link['status_override']) ? $link['status_override'] : 0,
+       'priority' => $settings['priority'],
+       'priority_default' => $settings['priority'],
+       'priority_override' => 0,
