@@ -1,7 +1,7 @@
 diff --git a/xmlsitemap.generate.inc b/xmlsitemap.generate.inc
 index a3ec4544..6af63881 100644
---- a/modules/custom/xmlsitemap/xmlsitemap.generate.inc
-+++ b/modules/custom/xmlsitemap/xmlsitemap.generate.inc
+--- a/xmlsitemap.generate.inc
++++ b/xmlsitemap.generate.inc
 @@ -316,6 +316,9 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
    // Set the regenerate flag in case something fails during file generation.
    $batch['operations'][] = array('xmlsitemap_batch_variable_set', array(array('xmlsitemap_regenerate_needed' => TRUE)));
