@@ -1,0 +1,52 @@
+diff --git a/eck.entity_type.inc b/eck.entity_type.inc
+index af4a9a8..4571d9c 100644
+--- a/eck.entity_type.inc
++++ b/eck.entity_type.inc
+@@ -472,6 +472,9 @@ function eck__entity_type__info($entity_type) {
+           'path' => $path . "/%eckentity/edit",
+           'entity_id' => 5,
+         ),
++        'translate' => array(
++          'path' => "{$entity_type->name}/{$bundle->name}/%eckentity/translate",
++        ),
+         'delete' => array(
+           'path' => $path . "/%eckentity/delete",
+           'entity_id' => 5,
+diff --git a/eck.module b/eck.module
+index d691aed..0667cd2 100644
+--- a/eck.module
++++ b/eck.module
+@@ -237,6 +237,15 @@ function entity_table($entities, $select = FALSE) {
+       $allowed_operations = l(t('edit'), $edit_path, array('query' => $destination));
+     }
+
++    // Check if the entity is translatable.
++    if (isset($entity->translations)) {
++      // Check that the user has permissions to translate.
++      if (eck__entity_menu_access('translate', $entity_type, $bundle, $id)) {
++        $translate_path = str_replace('%eckentity', $id, $crud_info['translate']['path']);
++        $allowed_operations .= (($allowed_operations) ? '<br />' : '') . l(t('translate'), $translate_path, array('query' => $destination));
++      }
++    }
++
+     // Check that the user has permissions to delete.
+     if (eck__entity_menu_access('delete', $entity_type, $bundle, $id)) {
+       $delete_path = str_replace('%eckentity', $id, $crud_info['delete']['path']);
+@@ -551,6 +560,9 @@ function eck_permission() {
+       'title' => t('View Entity Lists'),
+       'description' => t('Grants the ability to view the list of entities displayed on any bundle page.'),
+     ),
++    'eck translate entities' => array(
++      'title' => t('Translate Any Entity'),
++    ),
+   );
+
+   $perms_info = array(
+@@ -560,6 +572,7 @@ function eck_permission() {
+     'eck delete' => 'Delete',
+     'eck list' => 'View List of',
+     'eck view' => 'View',
++    'eck translate' => 'Translate',
+   );
+
+   foreach (EntityType::loadAll() as $entity_type) {
