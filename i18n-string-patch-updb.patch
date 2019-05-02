@@ -1,0 +1,29 @@
+diff --git a/i18n_string.module b/i18n_string.module
+index 1fe45d6b..14074af6 100644
+--- a/i18n_string.module
++++ b/i18n_string.module
+@@ -894,7 +894,9 @@ function i18n_string_object_translate($type, $object, $options = array()) {
+  *   Object or array
+  */
+ function i18n_string_object_remove($type, $object, $options = array()) {
+-  return i18n_object($type, $object)->strings_remove($options);
++  if(method_exists($object, 'strings_update')) {
++    return i18n_object($type, $object)->strings_remove($options);
++  }
+ }
+
+ /**
+@@ -906,7 +908,9 @@ function i18n_string_object_remove($type, $object, $options = array()) {
+  *   Object or array
+  */
+ function i18n_string_object_update($type, $object, $options = array()) {
+-  return i18n_object($type, $object)->strings_update($options);
++  if(method_exists($object, 'strings_update')) {
++    return i18n_object($type, $object)->strings_update($options);
++  }
+ }
+
+ /**
+--
+2.17.1
+
