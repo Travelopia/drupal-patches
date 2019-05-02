@@ -1,7 +1,7 @@
-diff --git a/i18n_string.module b/i18n_string.module
+diff --git a/i18n_string/i18n_string.module b/i18n_string/i18n_string.module
 index 1fe45d6b..13b31021 100644
---- a/i18n_string.module
-+++ b/i18n_string.module
+--- a/i18n_string/i18n_string.module
++++ b/i18n_string/i18n_string.module
 @@ -894,7 +894,9 @@ function i18n_string_object_translate($type, $object, $options = array()) {
   *   Object or array
   */
@@ -26,3 +26,4 @@ index 1fe45d6b..13b31021 100644
  /**
 --
 2.17.1
+
