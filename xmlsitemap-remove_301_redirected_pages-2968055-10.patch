@@ -1,0 +1,43 @@
+diff --git a/xmlsitemap.admin.inc b/xmlsitemap.admin.inc
+index cf1e367..41a44eb 100644
+--- a/xmlsitemap.admin.inc
++++ b/xmlsitemap.admin.inc
+@@ -319,6 +319,16 @@ function xmlsitemap_settings_form($form, &$form_state) {
+     '#default_value' => variable_get('xmlsitemap_robotstxt', 1),
+   );
+ 
++  // Allow to skip pages that might have 301 redirect set.
++  if (module_exists('redirect')) {
++    $form['xmlsitemap_redirect'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Skip pages that have 301 redirects set.'),
++      '#description' => t('Prevents pages which are 301 redirects to be saved in sitemap.'),
++      '#default_value' => variable_get('xmlsitemap_redirect', 0),
++    );
++  }
++
+   $form['advanced'] = array(
+     '#type' => 'fieldset',
+     '#title' => t('Advanced settings'),
+diff --git a/xmlsitemap.generate.inc b/xmlsitemap.generate.inc
+index 0bc42d1..a2006e5 100644
+--- a/xmlsitemap.generate.inc
++++ b/xmlsitemap.generate.inc
+@@ -207,6 +207,17 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer,
+   while ($link = $links->fetchAssoc()) {
+     $link['language'] = $link['language'] != LANGUAGE_NONE ? xmlsitemap_language_load($link['language']) : $url_options['language'];
+     $parsed_url = drupal_parse_url($link['loc']);
++
++    // Skip nodes which are 301 redirected.
++    if (variable_get('xmlsitemap_redirect')) {
++      $relative_redirect = redirect_fetch_rids_by_path($link['loc'], $link['language']->language, TRUE);
++      $alias_redirect = redirect_fetch_rids_by_path(ltrim(url($link['loc']), '/'), $link['language']->language, TRUE);
++      // If node contains a 301 redirect we skip it.
++      if (!empty($relative_redirect) || !empty($alias_redirect)) {
++        continue;
++      }
++    }
++
+     // Remove query or fragment.
+     $link['loc'] = $parsed_url['path'];
+     if ($url_options['alias']) {
