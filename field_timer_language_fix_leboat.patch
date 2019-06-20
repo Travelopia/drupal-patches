@@ -1,10 +1,10 @@
 diff --git a/field_timer.module b/field_timer.module
-index 12228a2..8a57b0a 100644
+index 12228a2..d380c70 100644
 --- a/field_timer.module
 +++ b/field_timer.module
 @@ -161,6 +161,7 @@ function field_timer_field_formatter_view($entity_type, $entity, $field, $instan
          $langcode, $items, $display) {
-
+ 
    $class = $display['type'] . '_' . $field['type'];
 +  $display['settings']['regional'] = $display['settings']['regional2'] = strtolower(strtolower($langcode) == 'und' ? 'en' : substr($langcode, 0, 2));
    $handler = new $class();
