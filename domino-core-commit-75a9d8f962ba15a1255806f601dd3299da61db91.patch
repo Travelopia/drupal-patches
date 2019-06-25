@@ -1,0 +1,26 @@
+From 75a9d8f962ba15a1255806f601dd3299da61db91 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Tue, 25 Jun 2019 12:44:09 +0100
+Subject: [PATCH] [TREK-821] Bump datalayer up to latest DEV version
+
+---
+ drupal-org.make | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index e4a0dba38..b07ddf4e1 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -592,8 +592,11 @@ projects[google_tag][version] = 1.2
+ projects[google_tag][subdir] = contrib
+ projects[google_tag][patch][2875358] = https://www.drupal.org/files/issues/2875358-fix-datalayer-integration.patch
+ 
+-projects[datalayer][version] = 1.1
++projects[datalayer][type] = module
+ projects[datalayer][subdir] = contrib
++projects[datalayer][download][type] = git
++projects[datalayer][download][branch] = 7.x-1.x
++projects[datalayer][download][revision] = 78aa88f5abff55a169fe137cbcb80aa95015dc3a
+ 
+ projects[commerce_google_tag_manager][version] = 2.0-rc3
+ projects[commerce_google_tag_manager][subdir] = contrib
