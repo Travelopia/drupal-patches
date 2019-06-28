@@ -1,0 +1,22 @@
+From a35483911aa654db4ce3b6f546c06878006bedba Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Fri, 28 Jun 2019 07:44:35 +0100
+Subject: [PATCH] [TREK-933] Patch l10n_client to work with jQuery versions
+ greater than 1.8
+
+---
+ modules/custom/d2_features/d2_i18n/d2_i18n.make | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/modules/custom/d2_features/d2_i18n/d2_i18n.make b/modules/custom/d2_features/d2_i18n/d2_i18n.make
+index 1f16c26d2..a2d536a86 100644
+--- a/modules/custom/d2_features/d2_i18n/d2_i18n.make
++++ b/modules/custom/d2_features/d2_i18n/d2_i18n.make
+@@ -33,6 +33,7 @@ projects[i18nviews][subdir] = contrib
+ ; ------------------------------------------------------------------------------
+ projects[l10n_client][version] = 1.3
+ projects[l10n_client][subdir] = contrib
++projects[l10n_client][patch][2191771] = https://www.drupal.org/files/issues/l10n_client-browser_is-2191771-17.patch
+ 
+ projects[l10n_update][version] = 2.1
+ projects[l10n_update][subdir] = contrib
