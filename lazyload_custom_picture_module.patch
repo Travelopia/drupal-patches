@@ -13,20 +13,20 @@ index eb1d1d8..e566f27 100644
 +  }
 +  return '<img ' . drupal_attributes($attributes) . ' data-src="'.$data_src.'" class="customLazyload" />';
  }
- 
+
  /**
 @@ -1628,7 +1632,10 @@ function theme_picture_source(array $variables) {
    if (isset($variables['sizes']) && !empty($variables['sizes'])) {
      $attributes['sizes'] = $variables['sizes'];
    }
 -  return '<source' . drupal_attributes($attributes) . ' />';
-+  $data_src = $attributes['srcset'];
++  $data_src = isset($attributes['srcset']) ? $attributes['srcset'] : '';
 +  unset($attributes['srcset']);
 +
 +  return '<source' . drupal_attributes($attributes) . ' class="customLazyload" data-src="' . $data_src . '"/>';
  }
- 
+
  /**
--- 
+--
 2.17.1
 
