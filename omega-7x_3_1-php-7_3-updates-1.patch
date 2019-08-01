@@ -1,0 +1,26 @@
+diff --git a/omega/includes/omega.theme.inc b/omega/includes/omega.theme.inc
+index 0ea7c4d..5067a6a 100644
+--- a/omega/includes/omega.theme.inc
++++ b/omega/includes/omega.theme.inc
+@@ -287,7 +287,7 @@ function omega_links($vars) {
+ 
+   $output = '';
+ 
+-  if (count($links) > 0) {
++  if (!empty($links) && count($links) > 0) {
+     // Treat the heading first if it is present to prepend it to the list of links.
+     if (!empty($heading)) {
+       if (is_string($heading)) {
+diff --git a/omega/template.php b/omega/template.php
+index a94c605..855a4df 100644
+--- a/omega/template.php
++++ b/omega/template.php
+@@ -162,7 +162,7 @@ function omega_alpha_process_region(&$vars) {
+         $vars['tabs'] = $theme->page['tabs'];
+         $vars['action_links'] = $theme->page['action_links'];
+         $vars['title_hidden'] = $theme->page['title_hidden'];
+-        $vars['feed_icons'] = $theme->page['feed_icons'];
++        $vars['feed_icons'] = (isset($theme->page['feed_icons'])) ? $theme->page['feed_icons'] : '';
+         break;
+ 
+       case 'menu':
