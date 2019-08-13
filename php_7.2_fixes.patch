@@ -1,0 +1,28 @@
+diff --git field_collection.entity.inc field_collection.entity.inc
+index 8b3a034..df212ae 100644
+--- field_collection.entity.inc
++++ field_collection.entity.inc
+@@ -299,7 +299,8 @@ class FieldCollectionItemEntity extends Entity {
+           $query->age(FIELD_LOAD_REVISION);
+         }
+         $result = $query->execute();
+-        list($this->hostEntityType, $data) = each($result);
++        $this->hostEntityType = key($result);
++        $data = current($result);
+ 
+         if ($this->isInUse()) {
+           $this->hostEntityId = $data ? key($data) : FALSE;
+diff --git field_collection.module field_collection.module
+index 0864010..cf3da6d 100644
+--- field_collection.module
++++ field_collection.module
+@@ -1433,7 +1433,8 @@ function field_collection_field_widget_embed_validate($element, &$form_state, $c
+ 
+       // Copied from _form_validate().
+       if (isset($elements['#needs_validation'])) {
+-        $is_empty_multiple = (!count($elements['#value']));
++        $is_countable = is_array($elements['#value']) || $elements['#value'] instanceof Countable;
++        $is_empty_multiple = $is_countable && (!count($elements['#value']));
+         $is_empty_string = (is_string($elements['#value']) && drupal_strlen(trim($elements['#value'])) == 0);
+         $is_empty_value = ($elements['#value'] === 0);
+         if ($is_empty_multiple || $is_empty_string || $is_empty_value) {
