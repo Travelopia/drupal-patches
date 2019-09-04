@@ -1,0 +1,53 @@
+From 78c787231d59ca380f9c25b104746280c4dfb315 Mon Sep 17 00:00:00 2001
+From: Alina Basarabeanu <alina.basarabeanu@tuidev.com>
+Date: Thu, 1 Aug 2019 15:04:59 +0100
+Subject: [PATCH 1/2] [TREK-956] Update module version from dev to 1.10
+
+---
+ drupal-org.make | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index e8218f62d..c92029abd 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -434,14 +434,9 @@ projects[multiform][subdir] = contrib
+ projects[imagecache_token][version] = 1.0-rc2
+ projects[imagecache_token][subdir] = contrib
+ 
+-; Bump from 1.5 to latest dev version 2016-01-10
+-projects[imagecache_actions][type] = module
++; ImageCache Actions
++projects[imagecache_actions][version] = 1.10
+ projects[imagecache_actions][subdir] = contrib
+-projects[imagecache_actions][download][type] = git
+-projects[imagecache_actions][download][branch] = 7.x-1.x
+-projects[imagecache_actions][download][revision] = c5963392568de62e5bfd1c16354ce35d4233d89e
+-; Adds the interlace effect for progressive JPG loading:
+-projects[imagecache_actions][patch][2080877] = https://www.drupal.org/files/issues/2080877_imagecache_actions_interlace_18.patch
+ 
+ projects[imagemagick][version] = 1.0
+ projects[imagemagick][subdir] = contrib
+
+From 5d728af9f764fa8d9c2c8a941ed6020b2a8ee0ed Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Wed, 4 Sep 2019 16:24:36 +0100
+Subject: [PATCH 2/2] [TREK-956] Bumping up to latest version
+
+---
+ drupal-org.make | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index c92029abd..285b8f812 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -435,7 +435,7 @@ projects[imagecache_token][version] = 1.0-rc2
+ projects[imagecache_token][subdir] = contrib
+ 
+ ; ImageCache Actions
+-projects[imagecache_actions][version] = 1.10
++projects[imagecache_actions][version] = 1.11
+ projects[imagecache_actions][subdir] = contrib
+ 
+ projects[imagemagick][version] = 1.0
