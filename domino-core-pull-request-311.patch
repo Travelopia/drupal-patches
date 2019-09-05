@@ -1,0 +1,26 @@
+From 4c39bdc40d26ddf552289bb21ef4ffbf93029f02 Mon Sep 17 00:00:00 2001
+From: Michael Kilmer <mike.kilmer@zegrahm.com>
+Date: Tue, 3 Sep 2019 14:15:07 -0700
+Subject: [PATCH] ZW-123: Update HTMLpurifier from 4.6.0 to 4.10.0
+
+This update fixed resolved a filter issue from running the website on PHP 7.2. Here is the changelog for version 4.10.0 - https://github.com/ezyang/htmlpurifier/blob/v4.10.0/NEWS
+---
+ drupal-org.make | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index e8218f62d..ec4c3d00f 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -407,9 +407,9 @@ libraries[codemagic][subdir] = tinymce/jscripts/tiny_mce/plugins
+ projects[htmlpurifier][version] = 1.0
+ projects[htmlpurifier][subdir] = contrib
+ 
+-; HTML Purifier v4.6.0 from Nov 30, 2013 (master branch)
++; HTML Purifier v4.10.0 from Feb. 22, 2018
+ libraries[htmlpurifier][download][type] = file
+-libraries[htmlpurifier][download][url] = https://github.com/ezyang/htmlpurifier/archive/v4.6.0.tar.gz
++libraries[htmlpurifier][download][url] = https://github.com/ezyang/htmlpurifier/archive/v4.10.0.tar.gz
+ 
+ ; Media
+ ; ------------------------------------------------------------------------------
