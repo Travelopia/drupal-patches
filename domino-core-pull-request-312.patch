@@ -1,0 +1,22 @@
+From b87e234ba172ef67d93a68f931214c43fad753fb Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Thu, 5 Sep 2019 08:37:41 +0100
+Subject: [PATCH] [TREK-978] Remove patch, no longer applies and approach is
+ completely different in the DEV version
+
+---
+ drupal-org.make | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index e8218f62d..ec3517ac1 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -245,7 +245,6 @@ projects[webform_views_select][patch][2468517] = https://www.drupal.org/files/is
+ ; HubSpot
+ projects[hubspot][version] = 2.x-dev
+ projects[hubspot][subdir] = contrib
+-projects[hubspot][patch][2471110] = https://www.drupal.org/files/issues/hubspot-submission-alter-2471110.patch
+ projects[hubspot][patch][2916481] = https://www.drupal.org/files/issues/2018-11-03/hubspot-oath2_support-2916481-16.patch
+ projects[hubspot][revision] = 3b3f1df86a664f083982f884618a2738ecd008b5
+ 
