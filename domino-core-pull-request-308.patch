@@ -1,0 +1,97 @@
+From 870363a0eb30f29e6b9c5dc6ba62958ae604780c Mon Sep 17 00:00:00 2001
+From: andyfarmerTUISHG <andy.farmer@travelopia.com>
+Date: Fri, 7 Jun 2019 10:46:07 +0100
+Subject: [PATCH 1/4] Revert "Updated diff module to 7.x-3.4"
+
+---
+ drupal-org.make | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index e4a0dba38..cf1e54563 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -81,8 +81,7 @@ projects[colorbox_node][download][branch] = 7.x-3.x
+ projects[colorbox_node][download][revision] = b389edd16f946d05b78eb7a65603f56cf8d47218
+ projects[colorbox_node][patch][2472715] = https://www.drupal.org/files/issues/prevent_feature_invalidation-2472715-1.patch
+ 
+-; Diff
+-projects[diff][version] = 3.4
++projects[diff][version] = 3.3
+ projects[diff][subdir] = contrib
+ 
+ projects[environment_indicator][version] = 2.8
+
+From f06eade30927e1fc0b512e9b23e9a727fb11bf08 Mon Sep 17 00:00:00 2001
+From: andyfarmerTUISHG <andy.farmer@travelopia.com>
+Date: Fri, 7 Jun 2019 13:40:02 +0100
+Subject: [PATCH 2/4] Revert "Revert "Updated diff module to 7.x-3.4""
+
+---
+ drupal-org.make | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drupal-org.make b/drupal-org.make
+index cf1e54563..e4a0dba38 100644
+--- a/drupal-org.make
++++ b/drupal-org.make
+@@ -81,7 +81,8 @@ projects[colorbox_node][download][branch] = 7.x-3.x
+ projects[colorbox_node][download][revision] = b389edd16f946d05b78eb7a65603f56cf8d47218
+ projects[colorbox_node][patch][2472715] = https://www.drupal.org/files/issues/prevent_feature_invalidation-2472715-1.patch
+ 
+-projects[diff][version] = 3.3
++; Diff
++projects[diff][version] = 3.4
+ projects[diff][subdir] = contrib
+ 
+ projects[environment_indicator][version] = 2.8
+
+From 61bc50c573604dcd947d199ba9c2c13cae0da1a0 Mon Sep 17 00:00:00 2001
+From: Nav <navdeep.playa@thlmarine.com>
+Date: Mon, 8 Jul 2019 11:06:54 +0100
+Subject: [PATCH 3/4] YB-335 updating feature module for PHP 7.2
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index e9eef262c..3d2d50ce7 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -107,10 +107,8 @@ projects[media][version] = 2.19
+ projects[media][subdir] = contrib
+ 
+ ; Panopoly 1.49 - Add additional patch
+-projects[features][version] = 2.10
++projects[features][version] = 2.11
+ projects[features][subdir] = contrib
+-; This patch fixes coding standards (PHP open tag)
+-projects[features][patch][2915110] = https://www.drupal.org/files/issues/features-coding_standards-2915110-2.diff
+ 
+ ; Panopoly 1.49 - Bump up to version 2.5
+ ; Brings in security updates.
+
+From 4131785c8259656d2465f01e19560e8986f2ba13 Mon Sep 17 00:00:00 2001
+From: Colin Stillwell <itsme@colinstillwell.com>
+Date: Thu, 5 Sep 2019 10:40:35 +0100
+Subject: [PATCH 4/4] YB-335 Added an updated version of the patch, rather than
+ removing it altogether
+
+---
+ modules/custom/d2_features/d2_panopoly/d2_panopoly.make | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+index 3d2d50ce7..6368c8bbe 100644
+--- a/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
++++ b/modules/custom/d2_features/d2_panopoly/d2_panopoly.make
+@@ -109,6 +109,8 @@ projects[media][subdir] = contrib
+ ; Panopoly 1.49 - Add additional patch
+ projects[features][version] = 2.11
+ projects[features][subdir] = contrib
++; This patch fixes coding standards (PHP open tag)
++projects[features][patch][2915110] = https://www.drupal.org/files/issues/2019-09-05/features-coding_standards-2915110-5.patch
+ 
+ ; Panopoly 1.49 - Bump up to version 2.5
+ ; Brings in security updates.
