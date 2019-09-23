@@ -1,14 +1,12 @@
 diff --git token.pages.inc token.pages.inc
-index 4fe3968..e1c1f7c 100644
+index 4fe3968..209aad7 100644
 --- token.pages.inc
 +++ token.pages.inc
-@@ -132,6 +132,9 @@ function theme_token_tree($variables) {
+@@ -132,6 +132,7 @@ function theme_token_tree($variables) {
      }
  
      if ($multiple_token_types) {
-+      if (!is_array($type_info)) {
-+        $type_info = array();
-+      }
++      $type_info = !is_array($type_info) ? array() : $type_info;
        $row = _token_token_tree_format_row($type, $type_info, TRUE);
        unset($row['data']['value']);
        $rows[] = $row;
