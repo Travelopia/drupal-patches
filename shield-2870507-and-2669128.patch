@@ -1,0 +1,78 @@
+diff --git a/shield.admin.inc b/shield.admin.inc
+index 68f261d..658ba50 100644
+--- a/shield.admin.inc
++++ b/shield.admin.inc
+@@ -45,13 +45,6 @@ function shield_admin_settings($form, &$form_state) {
+     '#default_value' => variable_get('shield_ignored_addresses', ''),
+   );
+ 
+-  $form['exceptions']['address']['shield_remote_address'] = array(
+-    '#type' => 'textfield',
+-    '#title' => t('Remote address key'),
+-    '#description' => t('Enter the key in the $_SERVER array that contains the remote server IP address.  This is REMOTE_ADDR in standard webserver configurations, but may be HTTP_X_FORWARDED_FOR if you are using a proxy such as Varnish.'),
+-    '#default_value' => variable_get('shield_remote_address', 'REMOTE_ADDR'),
+-  );
+-
+   $form['paths'] = array(
+     '#type' => 'fieldset',
+     '#title' => t('Path settings'),
+diff --git a/shield.install b/shield.install
+index 413cdff..9a2e855 100644
+--- a/shield.install
++++ b/shield.install
+@@ -36,7 +36,6 @@ function shield_uninstall() {
+   variable_del('shield_method');
+   variable_del('shield_paths');
+   variable_del('shield_ignored_addresses');
+-  variable_del('shield_remote_address');
+ }
+ 
+ /**
+@@ -48,3 +47,12 @@ function shield_update_7001(&$sandbox) {
+ 
+   return t('"shield_excluded_paths" value is moved to "shield_paths" and the unused variable is deleted.');
+ }
++
++/**
++ * Remove shield_remote_address variable
++ */
++function shield_update_7002(&$sandbox) {
++  variable_del('shield_remote_address');
++
++  return t('"shield_remote_address" is removed, Shield now uses the ip_address() function.');
++}
+diff --git a/shield.module b/shield.module
+index ae5b5cd..148f184 100644
+--- a/shield.module
++++ b/shield.module
+@@ -67,9 +67,8 @@ function shield_set_status($status = NULL) {
+   $user = variable_get('shield_user', '');
+   $cli = (drupal_is_cli() && variable_get('shield_allow_cli', 1));
+   $enabled = variable_get('shield_enabled', 1);
+-  $addresses = explode("\r\n", variable_get('shield_ignored_addresses', ''));
+-  $server_address = isset($_SERVER[variable_get('shield_remote_address', 'REMOTE_ADDR')]) ? $_SERVER[variable_get('shield_remote_address', 'REMOTE_ADDR')] : FALSE;
+-  if ($addresses && $server_address && array_search($server_address, $addresses) !== FALSE) {
++  $addresses = array_map('trim', explode("\n", variable_get('shield_ignored_addresses', '')));
++    if ($addresses && array_search(ip_address(), $addresses) !== FALSE) {
+     $enabled_address = TRUE;
+   }
+   else {
+diff --git a/shield.variable.inc b/shield.variable.inc
+index d9aaa91..e3697ca 100644
+--- a/shield.variable.inc
++++ b/shield.variable.inc
+@@ -45,14 +45,6 @@ function shield_variable_info($options) {
+     'type' => 'text',
+     'group' => 'shield'
+   );
+-  $variable['shield_remote_address'] = array(
+-    'title' => t('Remote address key', array(), $options),
+-    'description' => t('Enter the key in the $_SERVER array that contains the remote server IP address.  This is REMOTE_ADDR in standard webserver configurations, but may be HTTP_X_FORWARDED_FOR if you are using a proxy such as Varnish.', array(), $options),
+-    'type' => 'string',
+-    'default' => 'REMOTE_ADDR',
+-    'group' => 'shield',
+-    'multidomain' => TRUE,
+-  );
+ 
+   // Path
+   $variable['shield_method'] = array(
