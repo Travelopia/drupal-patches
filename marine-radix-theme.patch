@@ -1,7 +1,7 @@
-diff --git a/includes/menu.inc b/includes/menu.inc
+diff --git a/radix/includes/menu.inc b/radix/includes/menu.inc
 index f3af4a12..4229026c 100644
---- a/includes/menu.inc
-+++ b/includes/menu.inc
+--- a/radix/includes/menu.inc
++++ b/radix/includes/menu.inc
 @@ -119,7 +119,7 @@ function radix_menu_link__dropdown($variables) {
    $element = $variables['element'];
    $sub_menu = '';
