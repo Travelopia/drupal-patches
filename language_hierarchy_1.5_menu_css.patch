@@ -1,0 +1,13 @@
+diff --git a/language_hierarchy.css b/language_hierarchy.css
+index f7828cd..4387260 100644
+--- a/language_hierarchy.css
++++ b/language_hierarchy.css
+@@ -38,7 +38,7 @@
+   z-index: 999;
+   background-color: #fff;
+   border: 1px solid #ccc;
+-  margin: 2px 0 0 -7px;
++  margin: 0 0 0 -7px;
+   width: 100%;
+   min-width: 150px;
+ }
