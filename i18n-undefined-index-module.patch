@@ -1,0 +1,13 @@
+diff --git a/i18n_node/i18n_node.module b/i18n_node/i18n_node.module
+index 29d6ab0..15c6ff7 100644
+--- a/i18n_node/i18n_node.module
++++ b/i18n_node/i18n_node.module
+@@ -397,7 +397,7 @@ function i18n_node_textfield_process($element) {
+  */
+ function i18n_node_form_search_form_alter(&$form, &$form_state) {
+   // Advanced search form. Add language and localize content type names
+-  if ($form['module']['#value'] == 'node' && !empty($form['advanced'])) {
++  if (isset($form['module']['#value']) && $form['module']['#value'] == 'node' && !empty($form['advanced'])) {
+     // @todo Handle language search conditions
+     //$form['advanced']['language'] = _i18n_language_select();
+     if (!empty($form['advanced']['type'])) {
