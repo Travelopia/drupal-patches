@@ -7,7 +7,7 @@ index eb1d1d8..e566f27 100644
      return l('<img ' . drupal_attributes($attributes) . ' />', $variables['path']['path'], array('html' => TRUE) + $variables['path']['options']);
    }
 -  return '<img ' . drupal_attributes($attributes) . ' />';
-+  $data_src = $attributes['src'];
++  $data_src = isset($attributes['src']) ? $attributes['src'] : '';
 +  if (isset($attributes['src'])) {
 +    unset($attributes['src']);
 +  }
