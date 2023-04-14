@@ -1,0 +1,14 @@
+diff --git a/json.make b/json.make
+index d23d572..2e8df49 100644
+--- a/json.make
++++ b/json.make
+@@ -4,6 +4,7 @@ api = 2
+ 
+ ; Community dependency for JSON
+ 
++libraries[json-editor][type] = library
+ libraries[json-editor][download][type] = git
+ libraries[json-editor][download][url] = https://github.com/jdorn/json-editor.git
+-libraries[json-editor][download][tag] = v0.7.28
+\ No newline at end of file
++libraries[json-editor][download][tag] = v0.7.28
