@@ -1,0 +1,13 @@
+diff --git a/component/moopapi.component.inc b/component/moopapi.component.inc
+index 67a873c..ea9f538 100644
+--- a/component/moopapi.component.inc
++++ b/component/moopapi.component.inc
+@@ -239,7 +239,7 @@ abstract class Decorator extends Component {
+   /**
+    * @param IApplication $app
+    */
+-  public function __construct($decorators_applied = array(), &$relations = array(), $app) {
++  public function __construct($decorators_applied, &$relations, $app) {
+     parent::__construct($decorators_applied, $relations);
+     $this->original = $app;
+   }
