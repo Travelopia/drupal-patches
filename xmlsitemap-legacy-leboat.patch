@@ -1,0 +1,99 @@
+diff --git a/xmlsitemap.generate.inc b/xmlsitemap.generate.inc
+index a3ec4544..6af63881 100644
+--- a/xmlsitemap.generate.inc
++++ b/xmlsitemap.generate.inc
+@@ -316,6 +316,9 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
+   // Set the regenerate flag in case something fails during file generation.
+   $batch['operations'][] = array('xmlsitemap_batch_variable_set', array(array('xmlsitemap_regenerate_needed' => TRUE)));
+
++  // Calling a function to alter the xmlsitemap table
++  $batch['operations'][] = array('custom_xmlsitemap_regenerate', array());
++
+   // @todo Get rid of this batch operation.
+   $batch['operations'][] = array('_xmlsitemap_regenerate_before', array());
+
+@@ -331,6 +334,81 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
+   return $batch;
+ }
+
++/**
++ * This function update the xmlsitemap table
++ * This accomodates language fallback disable option, xml include option
++ * and translated & non translated nodes
++ */
++function custom_xmlsitemap_regenerate() {
++
++  //  // check the node with translations and update xmlsitemap
++  //  $node_translations = db_query("Select * from xmlsitemap where type= 'node'")->fetchAll();
++  //  foreach ($node_translations as $k => $v) {
++  //
++    $sql = db_query("Select * from xmlsitemap where type= 'node'")->fetchAll();
++    db_query("UPDATE xmlsitemap SET access=1");
++
++    foreach ($sql as $k => $v) {
++
++      //if ($v->id == '7700') {
++
++        $fallback_language_enabled = 0;
++
++        $node = node_load($v->id);
++        $handler = entity_translation_get_handler('node', $node);
++        $translations = $handler->getTranslations();
++
++        $translation_enabled = isset($translations->data[$v->language]) ? TRUE : FALSE;
++        // Update the parent language nodes.
++        if ($v->status == TRUE) {
++
++          if ($translation_enabled == FALSE) {
++            db_query("UPDATE xmlsitemap SET status='0', access=1 WHERE id= :id and type='node' and language = :language", array(':id' => $v->id, ':language' => $v->language));
++          }
++        }
++
++        // Check the language fallback domains and update the xmlsitemap for fallback language nodes
++        $language_array = language_hierarchy_get_ancestors($v->language);
++        //Check if it is fallback language
++        if (sizeof($language_array) == 0) {
++          $parent_lang = '';
++        }
++        else {
++          $parent_lang = array_keys($language_array);
++        }
++        if (isset($parent_lang[0])) {
++
++          // Update the language translations with correct values
++          $nodeTranslateType = 'node_translation_' . $v->language;
++          $get_translated_status = db_query("Select status from xmlsitemap where type= :type and id= :id and language = :language", array(':id' => $v->id, ':language' => $v->language, ':type' => $nodeTranslateType))->fetchObject();
++
++          $parent_language_array = db_query("Select * from xmlsitemap where type= :type and id= :id and language = :language", array(':id' => $v->id, ':language' => $parent_lang[0], ':type' => 'node'))->fetchObject();
++
++          $fallback_check = db_query("Select node_fallback_disable from node_fallback_status where nid= :nid", array(':nid' => $v->id))->fetchObject();
++
++          $fallback_language_enabled = $parent_language_array->status;
++
++          // Disable fallback in xmlsitemap as well.
++          if (isset($fallback_check->node_fallback_disable) && $fallback_check->node_fallback_disable == 1) {
++            $fallback_language_enabled = 0;
++          }
++          else {
++            if (isset($get_translated_status->status) && $get_translated_status->status == 1) {
++              $fallback_language_enabled = 1;
++            }
++          }
++
++          // Update the fallback language status.
++          if ($parent_language_array->status) {
++            //print_r($fallback_language_enabled);
++
++            db_query("UPDATE xmlsitemap SET status= '" . $fallback_language_enabled . "', access= 1  WHERE id= :id and type='node' and language = :language", array(':id' => $v->id, ':language' => $v->language));
++          }
++        }
++     //}
++    }
++  }
++
+ /**
+  * Batch callback; generate all pages of a sitemap.
+  */
+--
+2.17.1
+
