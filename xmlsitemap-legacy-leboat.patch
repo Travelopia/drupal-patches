@@ -71,11 +71,11 @@ index a3ec4544..6af63881 100644
 +          $fallback_language_enabled = $parent_language_array->status;
 +
 +          // Disable fallback in xmlsitemap as well.
-+          if ($fallback_check->node_fallback_disable == 1) {
++          if (isset($fallback_check->node_fallback_disable) && $fallback_check->node_fallback_disable == 1) {
 +            $fallback_language_enabled = 0;
 +          }
 +          else {
-+            if ($get_translated_status->status == 1) {
++            if (isset($get_translated_status->status) && $get_translated_status->status == 1) {
 +              $fallback_language_enabled = 1;
 +            }
 +          }
