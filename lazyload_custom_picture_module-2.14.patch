@@ -1,0 +1,29 @@
+diff --git a/picture.module b/picture.module
+index 45d098b..4f647da 100644
+--- a/picture.module
++++ b/picture.module
+@@ -1666,7 +1666,11 @@ function theme_image_srcset(array $variables) {
+   if (isset($variables['path']) && !empty($variables['path'])) {
+     return l('<img ' . drupal_attributes($attributes) . ' />', $variables['path']['path'], array('html' => TRUE) + $variables['path']['options']);
+   }
+-  return '<img ' . drupal_attributes($attributes) . ' />';
++  $data_src = isset($attributes['src']) ? $attributes['src'] : '';
++  if (isset($attributes['src'])) {
++    unset($attributes['src']);
++  }
++  return '<img ' . drupal_attributes($attributes) . ' data-src="'.$data_src.'" class="customLazyload" />';
+ }
+ 
+ /**
+@@ -1703,7 +1707,10 @@ function theme_picture_source(array $variables) {
+   if (isset($variables['sizes']) && !empty($variables['sizes'])) {
+     $attributes['sizes'] = $variables['sizes'];
+   }
+-  return '<source' . drupal_attributes($attributes) . ' />';
++  $data_src = isset($attributes['srcset']) ? $attributes['srcset'] : '';
++  unset($attributes['srcset']);
++
++  return '<source' . drupal_attributes($attributes) . ' class="customLazyload" data-src="' . $data_src . '"/>';
+ }
+ 
+ /**
