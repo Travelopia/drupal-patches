@@ -1,0 +1,13 @@
+diff --git a/minifyhtml.module b/minifyhtml.module
+index f515a85..0a7c6e8 100644
+--- a/minifyhtml.module
++++ b/minifyhtml.module
+@@ -225,7 +225,7 @@ function minifyhtml_minify(&$page) {
+ function minifyhtml_minify_callback($pattern, $callback, $content) {
+   $content = preg_replace_callback($pattern, $callback, $content);
+ 
+-  if ($error = preg_last_error()) {
++  if ($error = preg_last_error() && variable_get('minifyhtml_detailed_logging', 0)) {
+     watchdog('minifyhtml', '@error_message in regular expression "@pattern" (code: @error).', array(
+       '@error_message' => preg_last_error_msg(),
+       '@pattern' => $pattern,
