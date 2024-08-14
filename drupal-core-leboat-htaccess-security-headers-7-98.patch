@@ -2,7 +2,7 @@ diff --git a/.htaccess b/.htaccess
 index 7dd1d14c9f..354b06d41a 100644
 --- a/.htaccess
 +++ b/.htaccess
-@@ -154,3 +154,25 @@ DirectoryIndex index.php index.html index.htm
+@@ -154,3 +154,48 @@ DirectoryIndex index.php index.html index.htm
    # Disable Proxy header, since it's an attack vector.
    RequestHeader unset Proxy
  </IfModule>
@@ -27,4 +27,25 @@ index 7dd1d14c9f..354b06d41a 100644
 +  SetEnvIfNoCase Referer "^http(s)?://www\.leboat\.(at|be|ca|ch|co\.uk|co\.za|com|com\.au|de|fr|nl|es|it|se)\.qa\.aws\.tuimarine\.com/" SAMESITE
 +  SetEnvIfNoCase Referer "^http(s)?://www\.emeraldstar\.ie\.qa\.aws\.tuimarine\.com/" SAMESITE
 +  Header set X-Frame-Options ALLOW env=SAMESITE
++</IfModule>
++
++# CORS Configuration:
++# This configuration sets up Cross-Origin Resource Sharing (CORS) to allow requests from specific, trusted origins.
++# It dynamically permits only requests from these origins and specifies which headers can be included in cross-origin requests.
++# This setup ensures secure and controlled interactions between your application and trusted external domains.
++<IfModule mod_headers.c>
++  # Match the Origin header against a list of allowed origins.
++  # If the Origin matches any of the specified domains, set an environment variable
++  # 'AccessControlAllowOrigin' to the value of the Origin header.
++  SetEnvIf Origin "https://(qa|stage|www|vm|qa-legacy|stage-legacy|www-legacy|vm-legacy|qa-checkout|stage-checkout|www-checkout|vm-checkout)\.leboat\.(at|be|ca|ch|co\.uk|co\.za|com|com\.au|de|es|fr|it|nl)$" AccessControlAllowOrigin=$0
++  SetEnvIf Origin "https://(qa|stage|www|vm|qa-legacy|stage-legacy|www-legacy|vm-legacy|qa-checkout|stage-checkout|www-checkout|vm-checkout)\.emeraldstar\.ie$" AccessControlAllowOrigin=$0
++
++  # Set the Access-Control-Allow-Origin header to the value stored in 'AccessControlAllowOrigin'
++  # only if the environment variable is set. This dynamically reflects the allowed origin back to the browser,
++  # permitting cross-origin requests from trusted domains only.
++  Header set Access-Control-Allow-Origin "%{AccessControlAllowOrigin}e" env=AccessControlAllowOrigin
++
++  # Specify which headers can be included in the actual cross-origin request. This allows the custom
++  # 'X-Booking-Referer' header as well as other common headers like 'Content-Type', 'Accept', and 'X-Requested-With'.
++  Header set Access-Control-Allow-Headers "X-Booking-Referer, Content-Type, Accept, X-Requested-With"
 +</IfModule>
