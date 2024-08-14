@@ -1,8 +1,8 @@
 diff --git a/.htaccess b/.htaccess
-index 7dd1d14c9f..354b06d41a 100644
+index 7dd1d14c9f..5848d446ef 100644
 --- a/.htaccess
 +++ b/.htaccess
-@@ -154,3 +154,48 @@ DirectoryIndex index.php index.html index.htm
+@@ -154,3 +154,46 @@ DirectoryIndex index.php index.html index.htm
    # Disable Proxy header, since it's an attack vector.
    RequestHeader unset Proxy
  </IfModule>
