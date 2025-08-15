@@ -1,0 +1,61 @@
+--- a/includes/PictureMapping.php
++++ b/includes/PictureMapping.php
+@@ -40,8 +40,58 @@
+    * Boolean flag, used internally.
+    */
+   protected $isExporting = FALSE;
++
++  /**
++   * CTools export object ID.
++   *
++   * @var mixed
++   */
++  public $id;
++
++  /**
++   * CTools export table name.
++   *
++   * @var string
++   */
++  public $table;
++
++  /**
++   * CTools export type.
++   *
++   * @var string
++   */
++  public $type;
++
++  /**
++   * CTools export type flag.
++   *
++   * @var int
++   */
++  public $export_type;
++
++  /**
++   * CTools export disabled flag.
++   *
++   * @var bool
++   */
++  public $disabled;
++
++  /**
++   * CTools export API version.
++   *
++   * @var string
++   */
++  public $api_version;
+ 
+   /**
++   * CTools export module.
++   *
++   * @var string
++   */
++  public $export_module;
++
++
++  /**
+    * Set data values based on schema.
+    *
+    * @see picture_mapping_object_factory()

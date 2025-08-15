@@ -1,0 +1,64 @@
+--- a/memcache.inc
++++ b/memcache.inc
+@@ -20,6 +20,61 @@
+   protected $memcache;
+ 
+   /**
++   * The cache bin for which the object is created.
++   *
++   * @var string
++   */
++  protected $bin;
++
++  /**
++   * Array of wildcard flushes.
++   *
++   * @var array
++   */
++  protected $wildcard_flushes;
++
++  /**
++   * Invalidate setting.
++   *
++   * @var int
++   */
++  protected $invalidate;
++
++  /**
++   * Cache lifetime.
++   *
++   * @var int
++   */
++  protected $cache_lifetime;
++
++  /**
++   * Cache flush time.
++   *
++   * @var int|null
++   */
++  protected $cache_flush;
++
++  /**
++   * Cache content flush time.
++   *
++   * @var int
++   */
++  protected $cache_content_flush;
++
++  /**
++   * Cache temporary flush time.
++   *
++   * @var int
++   */
++  protected $cache_temporary_flush;
++
++  /**
++   * Flushed time.
++   *
++   * @var int
++   */
++  protected $flushed;
++  /**
+    * Constructs a MemCacheDrupal object.
+    *
+    * @param string $bin
